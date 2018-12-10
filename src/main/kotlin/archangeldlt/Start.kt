@@ -1,9 +1,9 @@
 package archangeldlt
 
-import javafx.application.Application
+import tornadofx.launch
 
 fun main(args: Array<String>) {
     println("Hello World!")
 
-    Application.launch(GUI::class.java, *args)
+    launch<GUI>(*args)
 }
