@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 
     val web3j = Web3j.build(HttpService("http://localhost:8545"))
     try {
-        println("Connected to Etherum client version: " + web3j.web3ClientVersion().send().web3ClientVersion)
+        println("Connected to Ethereum client version: " + web3j.web3ClientVersion().send().web3ClientVersion)
 
         val gasProvider = DefaultGasProvider()
         val transactionManager = ReadonlyTransactionManager(web3j, userAddress)
