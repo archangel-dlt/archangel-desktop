@@ -1,8 +1,8 @@
-package archangeldlt
+package archangeldlt.ethereum
 
 import archangeldlt.contract.Archangel
 import io.reactivex.disposables.Disposable
-import org.web3j.crypto.WalletUtils
+import javafx.collections.FXCollections
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.http.HttpService
@@ -11,16 +11,17 @@ import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
 
 class Ethereum {
-    var registrationEventSubscription: Disposable? = null
-    var updateEventsSubscription: Disposable? = null
-    val web3j = Web3j.build(HttpService("http://localhost:8545"))
+    val events = FXCollections.observableArrayList<Record>()
+    private var registrationEventSubscription: Disposable? = null
+    private var updateEventsSubscription: Disposable? = null
+    private val web3j = Web3j.build(HttpService("http://localhost:8545"))
 
     init {
         startWeb3()
     }
 
     private fun startWeb3() {
-        val userAddress = "0xF5F5F860C6d60C28e808c27708FD13FD96596752"
+        val userAddress = "0x0000000000000000000000000000000000000000"
         val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
 
         println("Connected to Ethereum client version: " + web3j.web3ClientVersion().send().web3ClientVersion)
@@ -40,15 +41,19 @@ class Ethereum {
         val registrationEvents = archangel.registrationEventFlowable(fromBlock, lastBlock)
         val updateEvents = archangel.updateEventFlowable(fromBlock, lastBlock)
 
-        registrationEventSubscription = updateEvents.subscribe(
+        registrationEventSubscription = registrationEvents.subscribe(
             {
-                println("Update  : ${it._key} ${it._payload}")
+                newEvent("Register", it._key, it._payload)
             }
         )
-        updateEventsSubscription = registrationEvents.subscribe(
+        updateEventsSubscription = updateEvents.subscribe(
             {
-                println("Register: ${it._key} ${it._payload}")
+                newEvent("Update", it._key, it._payload)
             }
         )
+    }
+
+    private fun newEvent(tag: String, key: String, bodyStr: String) {
+        events.add(Record(tag))
     }
 }
