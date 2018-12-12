@@ -45,22 +45,24 @@ class Ethereum {
         val updateEvents = archangel.updateEventFlowable(fromBlock, lastBlock)
 
         registrationEventSubscription = registrationEvents.subscribe {
-            newEvent("Register", it._key, it._payload)
+            newEvent("Register", it.log.blockNumber, it._addr, it._key, it._payload)
         }
         updateEventsSubscription = updateEvents.subscribe {
-            newEvent("Update", it._key, it._payload)
+            newEvent("Update", it.log.blockNumber, it._addr, it._key, it._payload)
         }
     }
 
-    private fun newEvent(tag: String, key: String, bodyStr: String) {
+    private fun newEvent(tag: String, block: BigInteger, addr: String, key: String, bodyStr: String) {
         val jsonParser = Parser()
         val body: JsonObject = jsonParser.parse(StringBuilder(bodyStr)) as JsonObject
+        val data = body.obj("data")
+        val files = body.array<JsonObject>("files")
         val timestamp = body.string("timestamp")
 
-        if (timestamp == null)
+        if (timestamp == null || data == null || files == null)
             return
 
-        events.add(Record(tag, key, timestamp))
-        events.sortByDescending { it.timestamp }
+        events.add(Record(block, addr, tag, key, timestamp, data, files))
+        events.sortByDescending { it.block }
     }
 }
