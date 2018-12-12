@@ -1,6 +1,8 @@
 package archangeldlt.ethereum
 
 import archangeldlt.contract.Archangel
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import io.reactivex.disposables.Disposable
 import javafx.collections.FXCollections
 import org.web3j.protocol.Web3j
@@ -8,6 +10,7 @@ import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.ReadonlyTransactionManager
 import org.web3j.tx.gas.DefaultGasProvider
+import java.lang.StringBuilder
 import java.math.BigInteger
 
 class Ethereum {
@@ -41,19 +44,23 @@ class Ethereum {
         val registrationEvents = archangel.registrationEventFlowable(fromBlock, lastBlock)
         val updateEvents = archangel.updateEventFlowable(fromBlock, lastBlock)
 
-        registrationEventSubscription = registrationEvents.subscribe(
-            {
-                newEvent("Register", it._key, it._payload)
-            }
-        )
-        updateEventsSubscription = updateEvents.subscribe(
-            {
-                newEvent("Update", it._key, it._payload)
-            }
-        )
+        registrationEventSubscription = registrationEvents.subscribe {
+            newEvent("Register", it._key, it._payload)
+        }
+        updateEventsSubscription = updateEvents.subscribe {
+            newEvent("Update", it._key, it._payload)
+        }
     }
 
     private fun newEvent(tag: String, key: String, bodyStr: String) {
-        events.add(Record(tag))
+        val jsonParser = Parser()
+        val body: JsonObject = jsonParser.parse(StringBuilder(bodyStr)) as JsonObject
+        val timestamp = body.string("timestamp")
+
+        if (timestamp == null)
+            return
+
+        events.add(Record(tag, key, timestamp))
+        events.sortByDescending { it.timestamp }
     }
 }
