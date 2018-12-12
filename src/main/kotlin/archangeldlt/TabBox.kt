@@ -13,15 +13,11 @@ class TabBox : View("Archangel") {
         gridpaneConstraints {
             vhGrow = Priority.ALWAYS
         }
-        tab ("Monitor") {
-            vbox {
-                this@tab += Monitor(ethereum)
-            }
-        }
         tab ("Search") {
-            vbox {
-                this@tab += Search()
-            }
+            this@tab += Search()
+        }
+        tab ("Monitor") {
+            this@tab += Monitor(ethereum)
         }
     }
 }
