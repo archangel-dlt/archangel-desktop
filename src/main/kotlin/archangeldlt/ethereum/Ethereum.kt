@@ -33,7 +33,8 @@ class Ethereum {
                 matches(it.item.creator, searchTerm) ||
                 matches(it.item.supplier, searchTerm) ||
                 matches(it.item.held, searchTerm) ||
-                matches(it.item.citation, searchTerm)
+                matches(it.item.citation, searchTerm) ||
+                fileHashMatch(it.item.files, searchTerm)
             }
             .sortedByDescending { it.block }
 
@@ -91,6 +92,11 @@ class Ethereum {
         fun matches(field : String?, searchTerm : String) : Boolean {
             return (field != null) &&
                     (field.toLowerCase().indexOf(searchTerm) != -1)
+        }
+        fun fileHashMatch(files : List<PackageFile>, searchTerm : String) : Boolean {
+            return files.find {
+                f -> f.hash.toLowerCase() == searchTerm
+            } != null
         }
     }
 }
