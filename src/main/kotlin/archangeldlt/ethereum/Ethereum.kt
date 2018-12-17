@@ -27,6 +27,7 @@ class Ethereum {
         println("Searching for ${searchTerm}")
         val results = ArrayList<Record>()
         results.add(events[0])
+        results.add(events[1])
         return results
     }
 

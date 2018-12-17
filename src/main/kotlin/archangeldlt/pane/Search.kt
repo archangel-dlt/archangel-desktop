@@ -5,6 +5,7 @@ import javafx.scene.layout.Priority
 import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
 import javafx.collections.FXCollections
+import javafx.scene.paint.Color
 import tornadofx.*
 
 class Search(ethereum: Ethereum) : View("Search Archangel") {
@@ -23,7 +24,7 @@ class Search(ethereum: Ethereum) : View("Search Archangel") {
 
     private fun doSearch(searchTerm : String) {
         val results = ethereum.search(searchTerm)
-        searchResults.setResults(results)
+        searchResults.setResults(searchTerm, results)
     }
 }
 
@@ -69,23 +70,74 @@ class SearchBox : View() {
 }
 
 class SearchResults : View() {
+    private var termLabel = SimpleStringProperty()
+    private var countLabel = SimpleStringProperty()
     private val results = FXCollections.observableArrayList<Record>()
 
-    override val root = tableview(results) {
-        column("Block", Record::Block)
-        column("Type", Record::Tag)
-        column("Key", Record::Key)
-        columnResizePolicy = SmartResize.POLICY
+    override val root = vbox {
+        hbox {
+            textfield(termLabel) {
+                hboxConstraints {
+                    hGrow = Priority.ALWAYS
+                }
+                setEditable(false)
+            }
+            textfield(countLabel) {
+                setEditable(false)
+            }
+        }
+        listview(results) {
+            cellFormat {
+                graphic = cache {
+                    stackpane {
+                        this += SearchResult(it)
+                    }
+                }
+            }
+        }
     }
 
-    init {
-        root.hide()
-    }
-
-    fun setResults(newResults : List<Record>) {
+    fun setResults(term : String, newResults : List<Record>) {
         results.clear()
         results.addAll(newResults)
 
-        if (results.isNotEmpty()) root.show() else root.hide()
+        termLabel.setValue("Searched for '${term}'")
+        countLabel.setValue("${results.size} packages found")
+    }
+}
+
+class SearchResult(record : Record) : View() {
+    override val root = form {
+        fieldset {
+            field("Citation Reference") {
+                textfield(record.Citation()) {
+                    setEditable(false)
+                }
+            }
+        }
+        fieldset {
+            field("Supplier") {
+                textfield(record.Supplier()) {
+                    setEditable(false)
+                }
+            }
+            field("Creator") {
+                textfield(record.Creator()) {
+                    setEditable(false)
+                }
+            }
+        }
+        fieldset {
+            field("Rights statement") {
+                textfield(record.Rights()) {
+                    setEditable(false)
+                }
+            }
+            field("Held by") {
+                textfield(record.Held()) {
+                    setEditable(false)
+                }
+            }
+        }
     }
 }

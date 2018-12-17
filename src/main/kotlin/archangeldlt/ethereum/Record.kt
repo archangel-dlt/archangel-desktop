@@ -19,4 +19,10 @@ class Record (val block: BigInteger,
     fun Tag() : StringProperty { return SimpleStringProperty(tag) }
     fun Key() : StringProperty { return SimpleStringProperty(key) }
     fun Timestamp() : StringProperty { return SimpleStringProperty(timestamp) }
+
+    fun Citation() : StringProperty { return SimpleStringProperty(data.string("citation")) }
+    fun Supplier() : StringProperty { return SimpleStringProperty(data.string("supplier")) }
+    fun Creator() : StringProperty { return SimpleStringProperty(data.string("creator")) }
+    fun Rights() : StringProperty { return SimpleStringProperty(data.string("rights")) }
+    fun Held() : StringProperty { return SimpleStringProperty(data.string("held")) }
 }
