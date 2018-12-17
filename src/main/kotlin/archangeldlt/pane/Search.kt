@@ -3,8 +3,13 @@ package archangeldlt.pane
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.layout.Priority
 import archangeldlt.ethereum.Ethereum
+import archangeldlt.ethereum.PackageFile
 import archangeldlt.ethereum.Record
+import com.sun.javafx.scene.control.skin.TableHeaderRow
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import javafx.scene.control.TableView
+import javafx.scene.layout.VBox.setVgrow
 import javafx.scene.paint.Color
 import tornadofx.*
 
@@ -94,6 +99,12 @@ class SearchResults : View() {
                     }
                 }
             }
+            vboxConstraints {
+                vgrow = Priority.ALWAYS
+            }
+        }
+        vboxConstraints {
+            vgrow = Priority.ALWAYS
         }
     }
 
@@ -110,34 +121,57 @@ class SearchResult(record : Record) : View() {
     override val root = form {
         fieldset {
             field("Citation Reference") {
-                textfield(record.Citation()) {
+                textfield(record.citation) {
                     setEditable(false)
                 }
             }
         }
         fieldset {
             field("Supplier") {
-                textfield(record.Supplier()) {
+                textfield(record.supplier) {
                     setEditable(false)
                 }
             }
             field("Creator") {
-                textfield(record.Creator()) {
+                textfield(record.creator) {
                     setEditable(false)
                 }
             }
         }
         fieldset {
             field("Rights statement") {
-                textfield(record.Rights()) {
+                textfield(record.rights) {
                     setEditable(false)
                 }
             }
             field("Held by") {
-                textfield(record.Held()) {
+                textfield(record.held) {
                     setEditable(false)
                 }
             }
+        }
+        tableview(record.files) {
+            readonlyColumn("Type", PackageFile::type)
+            readonlyColumn("Puid", PackageFile::puid)
+            readonlyColumn("Hash", PackageFile::hash)
+            readonlyColumn("Size", PackageFile::size)
+            readonlyColumn("Last Modified", PackageFile::lastModified)
+            resizeColumnsToFitContent()
+            fixedCellSize = 24.0
+
+            setTableHeightByRowCount(this, record.files)
+        }
+    }
+
+    companion object {
+        fun setTableHeightByRowCount(table : TableView<PackageFile>, files : ObservableList<PackageFile>) {
+            val rowCount = files.size
+            val tableHeight = (rowCount * table.fixedCellSize) +
+                    table.insets.top + table.insets.bottom +
+                    50.0
+            table.minHeight = tableHeight
+            table.maxHeight = tableHeight
+            table.prefHeight = tableHeight
         }
     }
 }

@@ -23,11 +23,20 @@ class Ethereum {
         startWeb3()
     }
 
-    fun search(searchTerm: String) : List<Record> {
-        println("Searching for ${searchTerm}")
-        val results = ArrayList<Record>()
-        results.add(events[0])
-        results.add(events[1])
+    fun search(phrase: String) : List<Record> {
+        println("Searching for ${phrase}")
+
+        val searchTerm = phrase.toLowerCase()
+
+        val results = events
+            .filter { it ->
+                matches(it.item.creator, searchTerm) ||
+                matches(it.item.supplier, searchTerm) ||
+                matches(it.item.held, searchTerm) ||
+                matches(it.item.citation, searchTerm)
+            }
+            .sortedByDescending { it.block }
+
         return results
     }
 
@@ -76,5 +85,12 @@ class Ethereum {
 
         events.add(Record(block, addr, tag, key, timestamp, data, files))
         events.sortByDescending { it.block }
+    }
+
+    companion object {
+        fun matches(field : String?, searchTerm : String) : Boolean {
+            return (field != null) &&
+                    (field.toLowerCase().indexOf(searchTerm) != -1)
+        }
     }
 }
