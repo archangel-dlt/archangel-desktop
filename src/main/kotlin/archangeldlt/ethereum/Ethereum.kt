@@ -23,7 +23,14 @@ class Ethereum {
         startWeb3()
     }
 
-    public fun shutdown() {
+    fun search(searchTerm: String) : List<Record> {
+        println("Searching for ${searchTerm}")
+        val results = ArrayList<Record>()
+        results.add(events[0])
+        return results
+    }
+
+    fun shutdown() {
         web3j.shutdown()
     }
 
