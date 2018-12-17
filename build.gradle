@@ -26,12 +26,12 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'archangeldlt.StartKt',
+                'Main-Class': 'archangeldlt.ArchangelDLTKt',
                 'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
         )
     }
 
-    mainClassName = 'archangeldlt.StartKt'
+    mainClassName = 'archangeldlt.ArchangelDLTKt'
 }
 
 shadowJar {

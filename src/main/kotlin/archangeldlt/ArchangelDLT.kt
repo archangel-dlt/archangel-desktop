@@ -6,6 +6,12 @@ import archangeldlt.pane.Search
 import javafx.scene.layout.Priority
 import tornadofx.*
 
+class GUI : App(TabBox::class)
+
+fun main(args: Array<String>) {
+    launch<GUI>(*args)
+}
+
 class TabBox : View("Archangel") {
     val ethereum = Ethereum()
 
