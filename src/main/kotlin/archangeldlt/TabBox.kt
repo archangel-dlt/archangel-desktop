@@ -22,4 +22,8 @@ class TabBox : View("Archangel") {
             isClosable = false
         }
     }
+
+    override fun onUndock() {
+        ethereum.shutdown()
+    }
 }

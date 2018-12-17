@@ -23,6 +23,10 @@ class Ethereum {
         startWeb3()
     }
 
+    public fun shutdown() {
+        web3j.shutdown()
+    }
+
     private fun startWeb3() {
         val userAddress = "0x0000000000000000000000000000000000000000"
         val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
