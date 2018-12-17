@@ -15,9 +15,11 @@ class TabBox : View("Archangel") {
         }
         tab ("Search") {
             this@tab += Search()
+            isClosable = false
         }
         tab ("Monitor") {
             this@tab += Monitor(ethereum)
+            isClosable = false
         }
     }
 }
