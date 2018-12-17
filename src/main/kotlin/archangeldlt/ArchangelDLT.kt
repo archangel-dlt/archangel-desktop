@@ -20,7 +20,7 @@ class TabBox : View("Archangel") {
             vhGrow = Priority.ALWAYS
         }
         tab ("Search") {
-            this@tab += Search()
+            this@tab += Search(ethereum)
             isClosable = false
         }
         tab ("Monitor") {
