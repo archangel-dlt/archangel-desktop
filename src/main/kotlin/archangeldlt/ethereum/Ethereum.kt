@@ -13,19 +13,19 @@ import org.web3j.tx.gas.DefaultGasProvider
 import java.lang.StringBuilder
 import java.math.BigInteger
 
-class Ethereum {
+class Ethereum() {
     val events = FXCollections.observableArrayList<Record>()
     private var registrationEventSubscription: Disposable? = null
     private var updateEventsSubscription: Disposable? = null
     private lateinit var web3j: Web3j
 
-    init {
-        startWeb3()
+    fun start(endpoint: String, userAddress: String) {
+        startWeb3(endpoint, userAddress)
     }
 
-    fun restart() {
+    fun restart(endpoint: String, userAddress: String) {
         shutdown()
-        startWeb3()
+        startWeb3(endpoint, userAddress)
     }
 
     fun search(phrase: String) : List<Record> {
@@ -51,9 +51,8 @@ class Ethereum {
         web3j.shutdown()
     }
 
-    private fun startWeb3() {
-        web3j = Web3j.build(HttpService("http://localhost:8545"))
-        val userAddress = "0x0000000000000000000000000000000000000000"
+    private fun startWeb3(endpoint: String, userAddress: String) {
+        web3j = Web3j.build(HttpService(endpoint))
         val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
 
         println("Connected to Ethereum client version: " + web3j.web3ClientVersion().send().web3ClientVersion)
