@@ -17,9 +17,14 @@ class Ethereum {
     val events = FXCollections.observableArrayList<Record>()
     private var registrationEventSubscription: Disposable? = null
     private var updateEventsSubscription: Disposable? = null
-    private val web3j = Web3j.build(HttpService("http://localhost:8545"))
+    private lateinit var web3j: Web3j
 
     init {
+        startWeb3()
+    }
+
+    fun restart() {
+        shutdown()
         startWeb3()
     }
 
@@ -42,10 +47,12 @@ class Ethereum {
     }
 
     fun shutdown() {
+        events.clear()
         web3j.shutdown()
     }
 
     private fun startWeb3() {
+        web3j = Web3j.build(HttpService("http://localhost:8545"))
         val userAddress = "0x0000000000000000000000000000000000000000"
         val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
 

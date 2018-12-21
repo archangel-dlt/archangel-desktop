@@ -1,5 +1,6 @@
 package archangeldlt.pane
 
+import archangeldlt.ArchangelController
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.layout.Priority
 import archangeldlt.ethereum.Ethereum
@@ -13,8 +14,8 @@ import javafx.scene.layout.VBox.setVgrow
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class Search(ethereum: Ethereum) : View("Search Archangel") {
-    private val ethereum = ethereum
+class Search(controller: ArchangelController) : View("Search Archangel") {
+    private val controller = controller
     private val searchBox = SearchBox()
     private val searchResults = SearchResults()
 
@@ -28,7 +29,7 @@ class Search(ethereum: Ethereum) : View("Search Archangel") {
     }
 
     private fun doSearch(searchTerm : String) {
-        val results = ethereum.search(searchTerm)
+        val results = controller.search(searchTerm)
         searchResults.setResults(searchTerm, results)
     }
 }

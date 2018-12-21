@@ -1,6 +1,7 @@
 package archangeldlt
 
 import archangeldlt.ethereum.Ethereum
+import archangeldlt.ethereum.Record
 import archangeldlt.pane.Monitor
 import archangeldlt.pane.Search
 import dialog.Settings
@@ -13,9 +14,30 @@ fun main(args: Array<String>) {
     launch<GUI>(*args)
 }
 
-class TabBox : View("Archangel") {
+class ArchangelController : Controller() {
     val ethereum = Ethereum()
-    val settings = Settings()
+    val events = ethereum.events
+
+    fun shutdown() {
+        ethereum.shutdown()
+    }
+
+    fun search(searchTerm: String) : List<Record> {
+        return ethereum.search(searchTerm)
+    }
+
+    fun openSettings() {
+        val settings = Settings(this)
+        settings.openModal()
+    }
+
+    fun updateSettings(endpoint: String, address: String) {
+        ethereum.restart()
+    }
+}
+
+class TabBox : View("Archangel") {
+    val controller = ArchangelController()
 
     override val root = vbox {
         hbox {
@@ -26,7 +48,7 @@ class TabBox : View("Archangel") {
             menubar {
                 menu("Settings") {
                     item("Ethereum","Shortcut+E").action {
-                        settings.openModal()
+                        controller.openSettings()
                     }
                 }
             }
@@ -36,17 +58,17 @@ class TabBox : View("Archangel") {
                 vhGrow = Priority.ALWAYS
             }
             tab("Search") {
-                this@tab += Search(ethereum)
+                this@tab += Search(controller)
                 isClosable = false
             }
             tab("Monitor") {
-                this@tab += Monitor(ethereum)
+                this@tab += Monitor(controller)
                 isClosable = false
             }
         }
     }
 
     override fun onUndock() {
-        ethereum.shutdown()
+        controller.shutdown()
     }
 }

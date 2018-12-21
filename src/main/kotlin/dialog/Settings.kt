@@ -1,5 +1,6 @@
 package dialog
 
+import archangeldlt.ArchangelController
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
 
@@ -21,7 +22,7 @@ class EthereumDetailsModel : ItemViewModel<EthereumDetails>() {
     }
 }
 
-class Settings : View("Settings") {
+class Settings(controller: ArchangelController) : View("Settings") {
     private val model = EthereumDetailsModel()
 
     override val root = form {
@@ -34,7 +35,10 @@ class Settings : View("Settings") {
             }
         }
         button("Save").action {
-            model.commit()
+            controller.updateSettings(
+                model.endpoint.value,
+                model.address.value
+            )
             this@Settings.close()
         }
     }
