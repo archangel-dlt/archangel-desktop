@@ -15,11 +15,25 @@ repositories {
     jcenter()
 }
 
+def javaFxPlatform() {
+    def currentOS = org.gradle.internal.os.OperatingSystem.current()
+    if (currentOS.isWindows())
+        return 'win'
+    if (currentOS.isLinux())
+        return 'linux'
+    if (currentOS.isMacOsX())
+        return 'mac'
+}
+def platform = javaFxPlatform()
+
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile group: 'org.web3j', name: 'core', version: '4.0.4'
     compile 'com.beust:klaxon:3.0.1'
     compile 'no.tornado:tornadofx:1.7.17'
+    compile "org.openjfx:javafx-base:11:${platform}"
+    compile "org.openjfx:javafx-graphics:11:${platform}"
+    compile "org.openjfx:javafx-controls:11:${platform}"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
