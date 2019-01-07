@@ -91,6 +91,7 @@ class TabBox : View("Archangel") {
                 this@tab += Monitor(controller)
                 isClosable = false
             }
+            vgrow = Priority.ALWAYS
         }
     }
 
