@@ -3,15 +3,11 @@ package archangeldlt.pane
 import archangeldlt.ArchangelController
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.layout.Priority
-import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.PackageFile
 import archangeldlt.ethereum.Record
-import com.sun.javafx.scene.control.skin.TableHeaderRow
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.control.TableView
-import javafx.scene.layout.VBox.setVgrow
-import javafx.scene.paint.Color
 import tornadofx.*
 
 class Search(controller: ArchangelController) : View("Search Archangel") {
