@@ -2,8 +2,11 @@ package dialog
 
 import archangeldlt.ArchangelController
 import javafx.beans.property.SimpleStringProperty
+import javafx.scene.control.Alert
+import javafx.scene.control.TextInputDialog
 import javafx.stage.FileChooser
 import javafx.stage.Stage
+import org.web3j.crypto.WalletUtils
 import tornadofx.*
 import java.io.File
 
@@ -26,7 +29,10 @@ class Settings(controller: ArchangelController) : View("Settings") {
                 }
                 button ("Browse").action {
                     val wallet = chooseWalletFile(walletFile.value, controller.primaryStage)
-                    if (wallet != null) walletFile.value = wallet
+                    if (wallet != null) {
+                        walletFile.value = wallet.file
+                        userAddress.value = wallet.address
+                    }
                 }
             }
         }
@@ -41,7 +47,11 @@ class Settings(controller: ArchangelController) : View("Settings") {
     }
 }
 
-fun chooseWalletFile(walletFile: String, stage: Stage): String? {
+data class WalletDetails(val file: String,
+                         val password: String,
+                         val address: String)
+
+fun chooseWalletFile(walletFile: String, stage: Stage): WalletDetails? {
     val fileChooser = FileChooser()
     fileChooser.title = "Wallet file"
 
@@ -49,6 +59,34 @@ fun chooseWalletFile(walletFile: String, stage: Stage): String? {
     fileChooser.initialDirectory = f.parentFile
     fileChooser.initialFileName = f.name
 
-    val newWallet = fileChooser.showOpenDialog(stage)
-    return newWallet?.absolutePath
+    try {
+        val newWallet = fileChooser.showOpenDialog(stage)
+        if (newWallet == null) return null
+
+        val password = solicitPassword()
+        if (password == null) return null
+
+        val creds = WalletUtils.loadCredentials(password, newWallet as File)
+        return WalletDetails(
+            newWallet?.absolutePath,
+            password,
+            creds.address
+        )
+    } catch (e: Exception) {
+        val alert = Alert(Alert.AlertType.ERROR)
+        alert.headerText = "Wallet Error"
+        alert.contentText = e.message
+        alert.showAndWait()
+    }
+    return null
+}
+
+fun solicitPassword(): String? {
+    val passwordBox = TextInputDialog("")
+    passwordBox.title = null
+    passwordBox.headerText = null
+    passwordBox.contentText = "Wallet password"
+
+    val result = passwordBox.showAndWait()
+    return result.orElse(null)
 }
