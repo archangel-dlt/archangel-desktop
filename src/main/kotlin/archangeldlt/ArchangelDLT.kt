@@ -15,58 +15,6 @@ fun main(args: Array<String>) {
     launch<GUI>(*args)
 }
 
-class ConfigProp(private val key: String, private val defaultValue: String) {
-    operator fun getValue(thisRef: ArchangelController, property: KProperty<*>): String {
-        return thisRef.app.config.string(key, defaultValue)
-    }
-    operator fun setValue(thisRef: ArchangelController, property: KProperty<*>, value: String) {
-        thisRef.app.config.set(key, value)
-        thisRef.app.config.save()
-    }
-}
-
-class ArchangelController : Controller() {
-    val ethereum = Ethereum()
-    val events = ethereum.events
-
-    private val KEY_ENDPOINT = "endpoint"
-    private val KEY_USERADDRESS = "userAddress"
-    private val KEY_WALLETFILE = "walletFile"
-    private val KEY_PASSWORD = "password"
-
-    var endpoint: String by ConfigProp(KEY_ENDPOINT, "http://localhost:8545")
-    var userAddress: String by ConfigProp(KEY_USERADDRESS, "0x0000000000000000000000000000000000000000")
-    var walletFile: String by ConfigProp(KEY_WALLETFILE, "")
-
-    init {
-        ethereum.start(endpoint, userAddress)
-    }
-
-    fun shutdown() {
-        ethereum.shutdown()
-    }
-
-    fun search(searchTerm: String) : List<Record> {
-        return ethereum.search(searchTerm)
-    }
-
-    fun openSettings() {
-        val settings = Settings(this)
-        settings.openModal()
-    }
-
-    fun updateSettings(newEndpoint: String, newAddress: String, newWalletFile: String) {
-        walletFile = newWalletFile
-
-        if ((newEndpoint == endpoint) && (newAddress == userAddress))
-            return
-        endpoint = newEndpoint
-        userAddress = newAddress
-
-        ethereum.restart(endpoint, userAddress)
-    }
-}
-
 class TabBox : View("Archangel") {
     val controller = ArchangelController()
 
