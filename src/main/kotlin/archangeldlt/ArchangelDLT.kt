@@ -31,9 +31,12 @@ class ArchangelController : Controller() {
 
     private val KEY_ENDPOINT = "endpoint"
     private val KEY_USERADDRESS = "userAddress"
+    private val KEY_WALLETFILE = "walletFile"
+    private val KEY_PASSWORD = "password"
 
     var endpoint: String by ConfigProp(KEY_ENDPOINT, "http://localhost:8545")
     var userAddress: String by ConfigProp(KEY_USERADDRESS, "0x0000000000000000000000000000000000000000")
+    var walletFile: String by ConfigProp(KEY_WALLETFILE, "")
 
     init {
         ethereum.start(endpoint, userAddress)
@@ -52,7 +55,9 @@ class ArchangelController : Controller() {
         settings.openModal()
     }
 
-    fun updateSettings(newEndpoint: String, newAddress: String) {
+    fun updateSettings(newEndpoint: String, newAddress: String, newWalletFile: String) {
+        walletFile = newWalletFile
+
         if ((newEndpoint == endpoint) && (newAddress == userAddress))
             return
         endpoint = newEndpoint
