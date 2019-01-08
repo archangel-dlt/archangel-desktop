@@ -2,7 +2,7 @@ package archangeldlt
 
 import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
-import dialog.Settings
+import archangeldlt.dialog.Settings
 import tornadofx.Controller
 
 class ArchangelController : Controller() {
@@ -41,10 +41,6 @@ class ArchangelController : Controller() {
 
             ethereum.restart(conf.endpoint, conf.userAddress)
         }
-    }
-
-    fun createSip() {
-        println ("Creating SIP...")
     }
 }
 

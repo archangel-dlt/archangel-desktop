@@ -1,4 +1,4 @@
-package dialog
+package archangeldlt.dialog
 
 import archangeldlt.ArchangelController
 import javafx.beans.property.SimpleStringProperty
