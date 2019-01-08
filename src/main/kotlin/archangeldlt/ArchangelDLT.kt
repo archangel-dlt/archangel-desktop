@@ -21,7 +21,7 @@ class TabBox : View("Archangel") {
         hbox {
             menubar {
                 visibleProperty().bind(controller.ethereum.hasWritePermission())
-                menuaction("Create SIP").action {
+                menuaction("New SIP").action {
                     controller.createSip()
                 }
             }
@@ -51,6 +51,8 @@ class TabBox : View("Archangel") {
             }
             vgrow = Priority.ALWAYS
         }
+        prefWidth = 800.0
+        prefHeight = 600.0
     }
 
     override fun onUndock() {
@@ -58,14 +60,17 @@ class TabBox : View("Archangel") {
     }
 }
 
-// MenuAction is part of a menubar but is fiddled to act like a button
+// MenuAction is part of a menubar but is fiddled to act like a button (almost)
 class MenuAction(label : String?) : Menu(label) {
     private var actionHandler: () -> Unit = { }
 
     init {
-        items.add(MenuItem("dummy"))
+        val dummy = MenuItem("")
+        items.add(dummy)
     }
+
     override fun show() {
+        super.show()
         actionHandler()
     }
 

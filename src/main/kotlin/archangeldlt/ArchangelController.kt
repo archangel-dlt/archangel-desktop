@@ -1,9 +1,11 @@
 package archangeldlt
 
+import archangeldlt.dialog.CreateSIP
 import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
 import archangeldlt.dialog.Settings
 import tornadofx.Controller
+import javax.json.JsonObject
 
 class ArchangelController : Controller() {
     val ethereum = Ethereum()
@@ -20,6 +22,13 @@ class ArchangelController : Controller() {
 
     fun search(searchTerm: String) : List<Record> {
         return ethereum.search(searchTerm)
+    }
+
+    fun store(key: String, payload: JsonObject) {
+        println("store (")
+        println("    " + key + ",")
+        println("    " + payload.toString())
+        println(")")
     }
 
     fun openSettings() {
@@ -41,6 +50,10 @@ class ArchangelController : Controller() {
 
             ethereum.restart(conf.endpoint, conf.userAddress)
         }
+    }
+
+    fun createSip() {
+        CreateSIP(this).openModal()
     }
 }
 
