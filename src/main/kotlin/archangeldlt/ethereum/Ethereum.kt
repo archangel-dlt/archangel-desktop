@@ -4,6 +4,8 @@ import archangeldlt.contract.Archangel
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import io.reactivex.disposables.Disposable
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
@@ -18,6 +20,8 @@ class Ethereum() {
     private var registrationEventSubscription: Disposable? = null
     private var updateEventsSubscription: Disposable? = null
     private lateinit var web3j: Web3j
+    private lateinit var archangel: Archangel
+    private val writePermission = SimpleBooleanProperty(false)
 
     fun start(endpoint: String, userAddress: String) {
         startWeb3(endpoint, userAddress)
@@ -51,6 +55,10 @@ class Ethereum() {
         web3j.shutdown()
     }
 
+    fun hasWritePermission() : BooleanProperty {
+        return writePermission
+    }
+
     private fun startWeb3(endpoint: String, userAddress: String) {
         web3j = Web3j.build(HttpService(endpoint))
         val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
@@ -59,7 +67,7 @@ class Ethereum() {
 
         val gasProvider = DefaultGasProvider()
         val transactionManager = ReadonlyTransactionManager(web3j, userAddress)
-        val archangel = Archangel.load(
+        archangel = Archangel.load(
             archangelContractAddress,
             web3j,
             transactionManager,
@@ -78,6 +86,8 @@ class Ethereum() {
         updateEventsSubscription = updateEvents.subscribe {
             newEvent("Update", it.log.blockNumber, it._addr, it._key, it._payload)
         }
+
+        writePermission.value = archangel.hasPermission(userAddress).send()
     }
 
     private fun newEvent(tag: String, block: BigInteger, addr: String, key: String, bodyStr: String) {

@@ -1,13 +1,12 @@
 package archangeldlt
 
-import archangeldlt.ethereum.Ethereum
-import archangeldlt.ethereum.Record
 import archangeldlt.pane.Monitor
 import archangeldlt.pane.Search
-import dialog.Settings
+import javafx.scene.control.Menu
+import javafx.scene.control.MenuBar
+import javafx.scene.control.MenuItem
 import javafx.scene.layout.Priority
 import tornadofx.*
-import kotlin.reflect.KProperty
 
 class GUI : App(TabBox::class)
 
@@ -20,6 +19,12 @@ class TabBox : View("Archangel") {
 
     override val root = vbox {
         hbox {
+            menubar {
+                visibleProperty().bind(controller.ethereum.hasWritePermission())
+                menuaction("Create SIP").action {
+                    controller.createSip()
+                }
+            }
             region {
                 hgrow = Priority.SOMETIMES
                 styleClass.add("menu-bar")
@@ -52,3 +57,29 @@ class TabBox : View("Archangel") {
         controller.shutdown()
     }
 }
+
+// MenuAction is part of a menubar but is fiddled to act like a button
+class MenuAction(label : String?) : Menu(label) {
+    private var actionHandler: () -> Unit = { }
+
+    init {
+        items.add(MenuItem("dummy"))
+    }
+    override fun show() {
+        actionHandler()
+    }
+
+    fun action(op: () -> Unit) {
+        actionHandler = op
+    }
+
+}
+
+fun MenuBar.menuaction(
+    name: String? = null, op: Menu.() -> Unit = {}
+) = MenuAction(name).also {
+    op(it)
+    this += it
+}
+
+

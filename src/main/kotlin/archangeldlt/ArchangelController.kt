@@ -42,5 +42,9 @@ class ArchangelController : Controller() {
             ethereum.restart(conf.endpoint, conf.userAddress)
         }
     }
+
+    fun createSip() {
+        println ("Creating SIP...")
+    }
 }
 
