@@ -22,5 +22,6 @@ class ArchangelConfig(val config: ConfigProperties) {
     var endpoint: String by ConfigProp(KEY_ENDPOINT, "http://localhost:8545")
     var userAddress: String by ConfigProp(KEY_USERADDRESS, "0x0000000000000000000000000000000000000000")
     var walletFile: String by ConfigProp(KEY_WALLETFILE, "")
+    var password: String by ConfigProp(KEY_PASSWORD, "")
 }
 

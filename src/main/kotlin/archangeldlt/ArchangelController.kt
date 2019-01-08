@@ -23,16 +23,24 @@ class ArchangelController : Controller() {
     }
 
     fun openSettings() {
-        val settings = Settings(this)
-        settings.openModal()
+        Settings(this).openModal()
     }
 
-    fun updateSettings(newEndpoint: String, newAddress: String, newWalletFile: String) {
-        conf.walletFile = newWalletFile
-        conf.endpoint = newEndpoint
-        conf.userAddress = newAddress
+    fun updateSettings(newEndpoint: String,
+                       newAddress: String,
+                       newWalletFile: String,
+                       newPassword: String) {
+        if (conf.walletFile != newWalletFile) {
+            conf.walletFile = newWalletFile
+            conf.password = newPassword
+        }
 
-        ethereum.restart(conf.endpoint, conf.userAddress)
+        if (conf.endpoint != newEndpoint || conf.userAddress != newAddress) {
+            conf.endpoint = newEndpoint
+            conf.userAddress = newAddress
+
+            ethereum.restart(conf.endpoint, conf.userAddress)
+        }
     }
 }
 

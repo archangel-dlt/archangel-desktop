@@ -14,6 +14,7 @@ class Settings(controller: ArchangelController) : View("Settings") {
     var endpoint = SimpleStringProperty(controller.conf.endpoint)
     var userAddress = SimpleStringProperty(controller.conf.userAddress)
     var walletFile = SimpleStringProperty(controller.conf.walletFile)
+    var password = ""
 
     override val root = form {
         fieldset {
@@ -32,6 +33,7 @@ class Settings(controller: ArchangelController) : View("Settings") {
                     if (wallet != null) {
                         walletFile.value = wallet.file
                         userAddress.value = wallet.address
+                        password = wallet.password
                     }
                 }
             }
@@ -40,7 +42,8 @@ class Settings(controller: ArchangelController) : View("Settings") {
             controller.updateSettings(
                 endpoint.value,
                 userAddress.value,
-                walletFile.value
+                walletFile.value,
+                password
             )
             close()
         }
