@@ -1,61 +1,100 @@
 package archangeldlt.ethereum
 
+import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
-import tornadofx.getProperty
-import tornadofx.property
+import tornadofx.*
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.json.JsonArray
 import javax.json.JsonObject
 
 class Package {
-    var citation by property<String>()
-    var supplier by property<String>()
-    var creator by property<String>()
-    var rights by property<String>()
-    var held by property<String>()
+    val citationProperty = SimpleStringProperty()
+    val supplierProperty = SimpleStringProperty()
+    val creatorProperty = SimpleStringProperty()
+    val rightsProperty = SimpleStringProperty()
+    val heldProperty = SimpleStringProperty()
+
+    var key : String = ""
+    val citation by citationProperty
+    val supplier by supplierProperty
+    val creator by creatorProperty
+    val rights by rightsProperty
+    val held by heldProperty
 
     val files = FXCollections.observableArrayList<PackageFile>()
 
-    fun citationProperty() = getProperty(Package::citation)
-    fun supplierProperty() = getProperty(Package::supplier)
-    fun creatorProperty() = getProperty(Package::creator)
-    fun rightsProperty() = getProperty(Package::rights)
-    fun heldProperty() = getProperty(Package::held)
+    init {
+        key = UUID.randomUUID().toString()
+    }
 
-    fun fromEvent(data : JsonObject, fileList : JsonArray) {
-        citation = data.getString("citation", "")
-        supplier = data.getString("supplier", "")
-        creator = data.getString("creator", "")
-        rights = data.getString("rights", "")
-        held = data.getString("held", "")
+    fun fromEvent(eventKey: String, data : JsonObject, fileList : JsonArray) {
+        key = eventKey
+        citationProperty.value = data.getString("citation", "")
+        supplierProperty.value = data.getString("supplier", "")
+        creatorProperty.value = data.getString("creator", "")
+        rightsProperty.value = data.getString("rights", "")
+        heldProperty.value = data.getString("held", "")
 
         fileList.forEach {
             val file = PackageFile(it.asJsonObject())
             files.add(file)
         }
     }
+
+    fun toJSON() : JsonObject {
+        val data = JsonBuilder()
+        with (data) {
+            add("key", key)
+            add("pack", "sip")
+            add("supplier", supplier)
+            add("creator", creator)
+            add("rights", rights)
+            add("held", held)
+        }
+
+        val fileJson = files.map { it.toJson() }
+
+        val json = JsonBuilder()
+        with (json) {
+            add("data", data)
+            add("files", fileJson)
+            add("timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
+        }
+        return json.build()
+    }
 }
 
 class PackageFile {
     constructor(f : JsonObject) {
-        type = f.getString("type")
-        puid = f.getString("puid")
-        hash = f.getString("sha256_hash")
+        path = ""
+        name = ""
+        type = f.getString("type", "")
+        puid = f.getString("puid", "")
+        hash = f.getString("sha256_hash", "")
         size = f.getString("size")?.toInt()
         lastModified = LocalDateTime.parse(f.getString("last_modified"))
     }
 
-    var name by property<String>()
-    var type by property<String>()
-    var puid by property<String>()
-    var hash by property<String>()
-    var size by property<Int>()
-    var lastModified by property<LocalDateTime>()
+    val path : String
+    val name : String
+    val type : String
+    val puid : String
+    val hash : String
+    val size : Int?
+    val lastModified : LocalDateTime
 
-    fun nameProperty() = getProperty(PackageFile::name)
-    fun typeProperty() = getProperty(PackageFile::type)
-    fun puidProperty() = getProperty(PackageFile::puid)
-    fun hashProperty() = getProperty(PackageFile::hash)
-    fun sizeProperty() = getProperty(PackageFile::size)
-    fun lastModifiedProperty() = getProperty(PackageFile::lastModified)
+    fun toJson() : JsonObject {
+        val fileJson = JsonBuilder()
+        with (fileJson) {
+            add("type", type)
+            add("puid", puid)
+            add("sha256_hash", hash)
+            add("size", size)
+            add("last_modified", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(lastModified))
+        }
+        return fileJson.build()
+    }
 }

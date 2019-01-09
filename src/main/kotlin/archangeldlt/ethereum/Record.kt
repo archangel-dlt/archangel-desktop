@@ -19,7 +19,7 @@ class Record (val block: BigInteger,
               fileList: JsonArray
 ) : ItemViewModel<Package>(Package()) {
     init {
-        item.fromEvent(data, fileList)
+        item.fromEvent(key, data, fileList)
     }
 
 
@@ -28,10 +28,10 @@ class Record (val block: BigInteger,
     fun Key() : StringProperty { return SimpleStringProperty(key) }
     fun Timestamp() : StringProperty { return SimpleStringProperty(timestamp) }
 
-    val citation = bind { item.citationProperty() }
-    val supplier = bind { item.supplierProperty() }
-    val creator = bind { item.creatorProperty() }
-    val rights = bind { item.rightsProperty() }
-    val held = bind { item.heldProperty() }
+    val citation = bind { item.citationProperty }
+    val supplier = bind { item.supplierProperty }
+    val creator = bind { item.creatorProperty }
+    val rights = bind { item.rightsProperty }
+    val held = bind { item.heldProperty }
     val files = item.files
 }
