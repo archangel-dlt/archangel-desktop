@@ -90,10 +90,8 @@ class SearchResults : View() {
         }
         listview(results) {
             cellFormat {
-                graphic = cache {
-                    stackpane {
-                        this += SearchResult(it)
-                    }
+                graphic = stackpane {
+                    this += SearchResult(it)
                 }
             }
             vboxConstraints {
