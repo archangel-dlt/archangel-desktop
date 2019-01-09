@@ -1,13 +1,13 @@
 package archangeldlt.ethereum
 
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import tornadofx.ItemViewModel
 import java.math.BigInteger
+import javax.json.JsonArray
+import javax.json.JsonObject
 
 
 class Record (val block: BigInteger,
@@ -15,8 +15,9 @@ class Record (val block: BigInteger,
               val tag: String,
               val key: String,
               val timestamp: String,
-              val data: JsonObject,
-              val fileList: JsonArray<JsonObject>) : ItemViewModel<Package>(Package()) {
+              data: JsonObject,
+              fileList: JsonArray
+) : ItemViewModel<Package>(Package()) {
     init {
         item.fromEvent(data, fileList)
     }

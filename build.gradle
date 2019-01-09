@@ -34,7 +34,6 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0'
     compile group: 'org.web3j', name: 'core', version: '4.0.4'
-    compile 'com.beust:klaxon:3.0.1'
     compile 'no.tornado:tornadofx:1.7.17'
     compile "org.openjfx:javafx-base:11:${platform}"
     compile "org.openjfx:javafx-graphics:11:${platform}"

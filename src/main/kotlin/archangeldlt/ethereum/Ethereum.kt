@@ -1,9 +1,6 @@
 package archangeldlt.ethereum
 
 import archangeldlt.contract.Archangel
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
@@ -16,9 +13,11 @@ import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.ReadonlyTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.DefaultGasProvider
-import java.lang.StringBuilder
 import java.math.BigInteger
 import kotlinx.coroutines.*
+import javax.json.Json
+import javax.json.JsonArray
+import javax.json.JsonValue
 
 class Ethereum() {
     val events = FXCollections.observableArrayList<Record>()
@@ -101,20 +100,26 @@ class Ethereum() {
     }
 
     private fun newEvent(tag: String, block: BigInteger, addr: String, key: String, bodyStr: String) {
-        val jsonParser = Parser()
-        val body: JsonObject = jsonParser.parse(StringBuilder(bodyStr)) as JsonObject
-        val data = body.obj("data")
-        var files = body.array<JsonObject>("files")
-        val timestamp = body.string("timestamp")
+        val body = eventToJson(bodyStr)
+        val data = body.getJsonObject("data")
+        var files = body.getJsonArray("files")
+        val timestamp = body.getString("timestamp")
 
         if (timestamp == null || data == null)
             return
 
         if (files == null)
-            files = JsonArray()
+            files = JsonValue.EMPTY_JSON_ARRAY
 
         events.add(Record(block, addr, tag, key, timestamp, data, files))
         events.sortByDescending { it.block }
+    }
+
+    private fun eventToJson(bodyStr: String) : javax.json.JsonObject {
+        val reader = Json.createReader(bodyStr.reader())
+        val json = reader.readObject()
+        reader.close()
+        return json
     }
 
     private fun loadContract (transactionManager: TransactionManager) : Archangel {

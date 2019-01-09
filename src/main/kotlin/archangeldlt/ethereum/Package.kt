@@ -1,11 +1,11 @@
 package archangeldlt.ethereum
 
-import com.beust.klaxon.JsonArray
 import javafx.collections.FXCollections
 import tornadofx.getProperty
 import tornadofx.property
 import java.time.LocalDateTime
-import com.beust.klaxon.JsonObject
+import javax.json.JsonArray
+import javax.json.JsonObject
 
 class Package {
     var citation by property<String>()
@@ -22,15 +22,15 @@ class Package {
     fun rightsProperty() = getProperty(Package::rights)
     fun heldProperty() = getProperty(Package::held)
 
-    fun fromEvent(data : JsonObject, fileList : JsonArray<JsonObject>) {
-        citation = data.string("citation")
-        supplier = data.string("supplier")
-        creator = data.string("creator")
-        rights = data.string("rights")
-        held = data.string("held")
+    fun fromEvent(data : JsonObject, fileList : JsonArray) {
+        citation = data.getString("citation", "")
+        supplier = data.getString("supplier", "")
+        creator = data.getString("creator", "")
+        rights = data.getString("rights", "")
+        held = data.getString("held", "")
 
         fileList.forEach {
-            val file = PackageFile(it)
+            val file = PackageFile(it.asJsonObject())
             files.add(file)
         }
     }
@@ -38,11 +38,11 @@ class Package {
 
 class PackageFile {
     constructor(f : JsonObject) {
-        type = f.string("type")
-        puid = f.string("puid")
-        hash = f.string("sha256_hash")
-        size = f.string("size")?.toInt()
-        lastModified = LocalDateTime.parse(f.string("last_modified"))
+        type = f.getString("type")
+        puid = f.getString("puid")
+        hash = f.getString("sha256_hash")
+        size = f.getString("size")?.toInt()
+        lastModified = LocalDateTime.parse(f.getString("last_modified"))
     }
 
     var name by property<String>()
