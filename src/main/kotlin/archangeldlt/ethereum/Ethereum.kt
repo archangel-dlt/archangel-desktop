@@ -43,11 +43,11 @@ class Ethereum() {
 
         val results = events
             .filter { it ->
-                matches(it.item.creator, searchTerm) ||
-                matches(it.item.supplier, searchTerm) ||
-                matches(it.item.held, searchTerm) ||
-                matches(it.item.citation, searchTerm) ||
-                fileHashMatch(it.item.files, searchTerm)
+                matches(it.creator, searchTerm) ||
+                matches(it.supplier, searchTerm) ||
+                matches(it.held, searchTerm) ||
+                matches(it.citation, searchTerm) ||
+                fileHashMatch(it.files, searchTerm)
             }
             .sortedByDescending { it.block }
 

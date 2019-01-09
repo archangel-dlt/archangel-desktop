@@ -1,10 +1,5 @@
 package archangeldlt.ethereum
 
-import javafx.beans.property.IntegerProperty
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.property.StringProperty
-import tornadofx.ItemViewModel
 import java.math.BigInteger
 import javax.json.JsonArray
 import javax.json.JsonObject
@@ -17,21 +12,13 @@ class Record (val block: BigInteger,
               val timestamp: String,
               data: JsonObject,
               fileList: JsonArray
-) : ItemViewModel<Package>(Package()) {
-    init {
-        item.fromEvent(key, data, fileList)
-    }
+) {
+    private val info = Package(key, data, fileList)
 
-
-    fun Block() : IntegerProperty { return SimpleIntegerProperty(block.intValueExact()) }
-    fun Tag() : StringProperty { return SimpleStringProperty(tag) }
-    fun Key() : StringProperty { return SimpleStringProperty(key) }
-    fun Timestamp() : StringProperty { return SimpleStringProperty(timestamp) }
-
-    val citation = bind { item.citationProperty }
-    val supplier = bind { item.supplierProperty }
-    val creator = bind { item.creatorProperty }
-    val rights = bind { item.rightsProperty }
-    val held = bind { item.heldProperty }
-    val files = item.files
+    val citation = info.citation
+    val supplier = info.supplier
+    val creator = info.creator
+    val rights = info.rights
+    val held = info.held
+    val files = info.files
 }

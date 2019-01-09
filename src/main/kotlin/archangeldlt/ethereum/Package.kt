@@ -26,11 +26,11 @@ class Package {
 
     val files = FXCollections.observableArrayList<PackageFile>()
 
-    init {
+    constructor() {
         key = UUID.randomUUID().toString()
     }
 
-    fun fromEvent(eventKey: String, data : JsonObject, fileList : JsonArray) {
+    constructor(eventKey: String, data : JsonObject, fileList : JsonArray) {
         key = eventKey
         citationProperty.value = data.getString("citation", "")
         supplierProperty.value = data.getString("supplier", "")
