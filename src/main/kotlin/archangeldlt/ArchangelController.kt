@@ -26,10 +26,8 @@ class ArchangelController : Controller() {
     }
 
     fun store(key: String, payload: JsonObject) {
-        runAsync {
-            val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
-            ethereum.store(key, payload, creds)
-        }
+        val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
+        ethereum.store(key, payload, creds)
     }
 
     fun openSettings() {

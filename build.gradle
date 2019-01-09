@@ -1,3 +1,7 @@
+buildscript {
+    ext.kotlin_version = '1.3.11'
+}
+
 plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.3'
     id 'java'
@@ -28,6 +32,7 @@ def platform = javaFxPlatform()
 
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0'
     compile group: 'org.web3j', name: 'core', version: '4.0.4'
     compile 'com.beust:klaxon:3.0.1'
     compile 'no.tornado:tornadofx:1.7.17'

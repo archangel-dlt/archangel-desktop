@@ -14,16 +14,17 @@ import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.ReadonlyTransactionManager
+import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.DefaultGasProvider
 import java.lang.StringBuilder
 import java.math.BigInteger
+import kotlinx.coroutines.*
 
 class Ethereum() {
     val events = FXCollections.observableArrayList<Record>()
     private var registrationEventSubscription: Disposable? = null
     private var updateEventsSubscription: Disposable? = null
     private lateinit var web3j: Web3j
-    private lateinit var archangel: Archangel
     private val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
     private val writePermission = SimpleBooleanProperty(false)
 
@@ -64,19 +65,16 @@ class Ethereum() {
     }
 
     fun store(key: String, payload: javax.json.JsonObject, creds: Credentials) {
-        val gasProvider = DefaultGasProvider()
-        val transactionManager = RawTransactionManager(web3j, creds)
-        val writeableArchangel = Archangel.load(
-            archangelContractAddress,
-            web3j,
-            transactionManager,
-            gasProvider
-        )
+        GlobalScope.launch {
+            val writeableArchangel = loadContract(RawTransactionManager(web3j, creds))
 
-        val txReceipt = writeableArchangel.store(
-            key,
-            payload.toString()
-        ).send()
+            val txReceipt = writeableArchangel.store(
+                key,
+                payload.toString()
+            ).send()
+            println("got tx receipt: " + txReceipt.toString())
+        }
+        println("store()")
     }
 
     private fun startWeb3(endpoint: String, userAddress: String) {
@@ -84,14 +82,7 @@ class Ethereum() {
 
         println("Connected to Ethereum client version: " + web3j.web3ClientVersion().send().web3ClientVersion)
 
-        val gasProvider = DefaultGasProvider()
-        val transactionManager = ReadonlyTransactionManager(web3j, userAddress)
-        archangel = Archangel.load(
-            archangelContractAddress,
-            web3j,
-            transactionManager,
-            gasProvider
-        )
+        val archangel = loadContract(ReadonlyTransactionManager(web3j, userAddress))
 
         val fromBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(2898300))
         val lastBlock = DefaultBlockParameter.valueOf("latest")
@@ -124,6 +115,17 @@ class Ethereum() {
 
         events.add(Record(block, addr, tag, key, timestamp, data, files))
         events.sortByDescending { it.block }
+    }
+
+    private fun loadContract (transactionManager: TransactionManager) : Archangel {
+        val gasProvider = DefaultGasProvider()
+
+        return Archangel.load(
+            archangelContractAddress,
+            web3j,
+            transactionManager,
+            gasProvider
+        )
     }
 
     companion object {
