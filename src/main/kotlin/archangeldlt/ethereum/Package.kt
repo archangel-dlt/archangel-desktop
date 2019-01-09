@@ -7,8 +7,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.json.JsonArray
-import javax.json.JsonObject
+import javax.json.*
 
 class Package {
     val citationProperty = SimpleStringProperty()
@@ -69,12 +68,12 @@ class Package {
 
 class PackageFile {
     constructor(f : JsonObject) {
-        path = ""
-        name = ""
+        path = f.getString("path", "")
+        name = f.getString("name", "")
         type = f.getString("type", "")
         puid = f.getString("puid", "")
         hash = f.getString("sha256_hash", "")
-        size = f.getString("size")?.toInt()
+        size = fileSize(f.get("size"))
         lastModified = LocalDateTime.parse(f.getString("last_modified"))
     }
 
@@ -83,7 +82,7 @@ class PackageFile {
     val type : String
     val puid : String
     val hash : String
-    val size : Int?
+    val size : Int
     val lastModified : LocalDateTime
 
     fun toJson() : JsonObject {
@@ -96,5 +95,17 @@ class PackageFile {
             add("last_modified", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(lastModified))
         }
         return fileJson.build()
+    }
+
+    companion object {
+        private fun fileSize(o : JsonValue?) : Int {
+            if (o == null)
+                return 0
+            if (o.valueType == JsonValue.ValueType.STRING)
+                return (o as JsonString).string.toInt()
+            if (o.valueType == JsonValue.ValueType.NUMBER)
+                return (o as JsonNumber).intValue()
+            return 0
+        }
     }
 }

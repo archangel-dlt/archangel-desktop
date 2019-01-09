@@ -16,7 +16,6 @@ import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
 import kotlinx.coroutines.*
 import javax.json.Json
-import javax.json.JsonArray
 import javax.json.JsonValue
 
 class Ethereum() {

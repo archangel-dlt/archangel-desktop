@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority
 import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import tornadofx.*
+import java.io.File
 
 class CreateSIP(val controller: ArchangelController) : View("New SIP") {
     private lateinit var advanceButton: Button
@@ -117,7 +118,7 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
 
         val chosen = fileChooser.showOpenMultipleDialog(controller.primaryStage)
 
-        println("Choose " + chosen?.toString())
+        droidFiles(chosen)
     }
 
     private fun addDirectory() {
@@ -126,7 +127,25 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
 
         val chosen = dirChooser.showDialog(controller.primaryStage)
 
-        println("Choose " + chosen?.toString())
+        droidFiles(chosen)
+    }
+
+    private fun droidFiles(directory: File) {
+        if (directory == null)
+            return
+        droidFiles(listOf(directory))
+    }
+
+    private fun droidFiles(files: List<File>) {
+        if (files == null)
+            return
+
+        runAsync {
+            val fileJson = controller.characterizeFiles(files)
+            fileJson.forEach {
+                sip.files.add(PackageFile(it))
+            }
+        }
     }
 
     private fun uploadSIP() {

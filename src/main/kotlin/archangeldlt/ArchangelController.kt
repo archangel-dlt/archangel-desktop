@@ -6,6 +6,8 @@ import archangeldlt.ethereum.Record
 import archangeldlt.dialog.Settings
 import org.web3j.crypto.WalletUtils
 import tornadofx.Controller
+import uk.gov.nationalarchives.droid.command.DroidWrapper
+import java.io.File
 import javax.json.JsonObject
 
 class ArchangelController : Controller() {
@@ -15,6 +17,7 @@ class ArchangelController : Controller() {
 
     init {
         ethereum.start(conf.endpoint, conf.userAddress)
+        DroidWrapper.setupDroid()
     }
 
     fun shutdown() {
@@ -53,6 +56,12 @@ class ArchangelController : Controller() {
 
     fun createSip() {
         CreateSIP(this).openModal()
+    }
+
+    fun characterizeFiles(files : List<File>) : List<JsonObject> {
+        val fileNames = files.map { it->it.absolutePath }
+
+        return DroidWrapper.characterizeFile(fileNames)
     }
 }
 
