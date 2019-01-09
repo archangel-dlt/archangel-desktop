@@ -7,6 +7,8 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
 import javafx.scene.control.Button
 import javafx.scene.layout.Priority
+import javafx.stage.DirectoryChooser
+import javafx.stage.FileChooser
 import tornadofx.*
 
 class CreateSIP(val controller: ArchangelController) : View("New SIP") {
@@ -82,6 +84,12 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
             button("Add Files") {
                 visibleProperty().bind(readyToUpload.not())
                 prefWidth = 150.0
+                action { addFiles() }
+            }
+            button("Add Directory") {
+                visibleProperty().bind(readyToUpload.not())
+                prefWidth = 150.0
+                action { addDirectory() }
             }
         }
 
@@ -89,12 +97,12 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
         prefHeight = 500.0
     }
 
-    fun previous() {
+    private fun previous() {
         readyToUpload.value = false
         advanceButton.text = "Create SIP »»"
     }
 
-    fun advance() {
+    private fun advance() {
         if (readyToUpload.value == false) {
             readyToUpload.value = true
             advanceButton.text = "Upload SIP"
@@ -103,7 +111,25 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
         }
     }
 
-    fun uploadSIP() {
+    private fun addFiles() {
+        val fileChooser = FileChooser()
+        fileChooser.title = "Add Files To SIP"
+
+        val chosen = fileChooser.showOpenMultipleDialog(controller.primaryStage)
+
+        println("Choose " + chosen?.toString())
+    }
+
+    private fun addDirectory() {
+        val dirChooser = DirectoryChooser()
+        dirChooser.title = "Add Directory Contents To SIP"
+
+        val chosen = dirChooser.showDialog(controller.primaryStage)
+
+        println("Choose " + chosen?.toString())
+    }
+
+    private fun uploadSIP() {
         val payload = sip.toJSON()
         controller.store(sip.key, payload)
         close()
