@@ -4,6 +4,7 @@ import archangeldlt.dialog.CreateSIP
 import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
 import archangeldlt.dialog.Settings
+import org.web3j.crypto.WalletUtils
 import tornadofx.Controller
 import javax.json.JsonObject
 
@@ -25,10 +26,10 @@ class ArchangelController : Controller() {
     }
 
     fun store(key: String, payload: JsonObject) {
-        println("store (")
-        println("    " + key + ",")
-        println("    " + payload.toString())
-        println(")")
+        runAsync {
+            val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
+            ethereum.store(key, payload, creds)
+        }
     }
 
     fun openSettings() {

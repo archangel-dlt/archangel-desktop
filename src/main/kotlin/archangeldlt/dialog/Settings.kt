@@ -71,7 +71,7 @@ fun chooseWalletFile(walletFile: String, stage: Stage): WalletDetails? {
 
         val creds = WalletUtils.loadCredentials(password, newWallet as File)
         return WalletDetails(
-            newWallet?.absolutePath,
+            newWallet.absolutePath,
             password,
             creds.address
         )

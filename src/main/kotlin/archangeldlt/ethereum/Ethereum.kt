@@ -1,15 +1,18 @@
 package archangeldlt.ethereum
 
 import archangeldlt.contract.Archangel
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import io.reactivex.disposables.Disposable
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
+import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameter
 import org.web3j.protocol.http.HttpService
+import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.ReadonlyTransactionManager
 import org.web3j.tx.gas.DefaultGasProvider
 import java.lang.StringBuilder
@@ -21,6 +24,7 @@ class Ethereum() {
     private var updateEventsSubscription: Disposable? = null
     private lateinit var web3j: Web3j
     private lateinit var archangel: Archangel
+    private val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
     private val writePermission = SimpleBooleanProperty(false)
 
     fun start(endpoint: String, userAddress: String) {
@@ -59,9 +63,24 @@ class Ethereum() {
         return writePermission
     }
 
+    fun store(key: String, payload: javax.json.JsonObject, creds: Credentials) {
+        val gasProvider = DefaultGasProvider()
+        val transactionManager = RawTransactionManager(web3j, creds)
+        val writeableArchangel = Archangel.load(
+            archangelContractAddress,
+            web3j,
+            transactionManager,
+            gasProvider
+        )
+
+        val txReceipt = writeableArchangel.store(
+            key,
+            payload.toString()
+        ).send()
+    }
+
     private fun startWeb3(endpoint: String, userAddress: String) {
         web3j = Web3j.build(HttpService(endpoint))
-        val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
 
         println("Connected to Ethereum client version: " + web3j.web3ClientVersion().send().web3ClientVersion)
 
@@ -94,11 +113,14 @@ class Ethereum() {
         val jsonParser = Parser()
         val body: JsonObject = jsonParser.parse(StringBuilder(bodyStr)) as JsonObject
         val data = body.obj("data")
-        val files = body.array<JsonObject>("files")
+        var files = body.array<JsonObject>("files")
         val timestamp = body.string("timestamp")
 
-        if (timestamp == null || data == null || files == null)
+        if (timestamp == null || data == null)
             return
+
+        if (files == null)
+            files = JsonArray()
 
         events.add(Record(block, addr, tag, key, timestamp, data, files))
         events.sortByDescending { it.block }
