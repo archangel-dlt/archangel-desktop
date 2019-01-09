@@ -1,9 +1,9 @@
 package archangeldlt.dialog
 
 import archangeldlt.ArchangelController
-import com.beust.klaxon.JsonObject
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.collections.FXCollections
 import javafx.scene.control.Button
 import javafx.scene.layout.Priority
 import tornadofx.*
@@ -47,6 +47,7 @@ class Sip : JsonModel {
 
 class CreateSIP(val controller: ArchangelController) : View("New SIP") {
     private lateinit var advanceButton: Button
+    private val fileList = FXCollections.observableArrayList<String>()
 
     private val sip = Sip()
     private val readyToUpload = SimpleBooleanProperty(false)
@@ -89,6 +90,29 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
                 textfield(sip.heldByProperty) {
                     disableProperty().bind(readyToUpload)
                 }
+            }
+        }
+        tableview(fileList) {
+            column("Path", String::toString)
+            column("File name", String::toString)
+            column("Type", String::toString)
+            column("Puid", String::toString)
+            column("Hash", String::toString)
+            column("Size", String::toString)
+            column("Last Modified", String::toString)
+
+            columns[0].visibleProperty().bind(readyToUpload.not())
+            columns[1].visibleProperty().bind(readyToUpload.not())
+            columnResizePolicy = SmartResize.POLICY
+            vgrow = Priority.ALWAYS
+        }
+        hbox {
+            region {
+                hgrow = Priority.SOMETIMES
+            }
+            button("Add Files") {
+                visibleProperty().bind(readyToUpload.not())
+                prefWidth = 150.0
             }
         }
 
