@@ -22,11 +22,15 @@ class Package {
     val creator by creatorProperty
     val rights by rightsProperty
     val held by heldProperty
+    val isSip: Boolean
+    val isAip: Boolean
 
     val files = FXCollections.observableArrayList<PackageFile>()
 
     constructor() {
         key = UUID.randomUUID().toString()
+        isSip = true
+        isAip = false
     }
 
     constructor(eventKey: String, data : JsonObject, fileList : JsonArray) {
@@ -36,6 +40,8 @@ class Package {
         creatorProperty.value = data.getString("creator", "")
         rightsProperty.value = data.getString("rights", "")
         heldProperty.value = data.getString("held", "")
+        isSip = data.getString("pack", "") == "sip"
+        isAip = data.getString("pack", "") == "aip"
 
         fileList.forEach {
             val file = PackageFile(it.asJsonObject())

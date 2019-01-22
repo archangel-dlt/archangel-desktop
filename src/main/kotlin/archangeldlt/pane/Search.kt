@@ -114,10 +114,12 @@ class SearchResults : View() {
 
 class SearchResult(record : Record) : View() {
     override val root = form {
-        fieldset {
-            field("Citation Reference") {
-                textfield(record.citation) {
-                    setEditable(false)
+        if (record.isAip) {
+            fieldset {
+                field("Citation Reference") {
+                    textfield(record.citation) {
+                        setEditable(false)
+                    }
                 }
             }
         }

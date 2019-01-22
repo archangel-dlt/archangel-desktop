@@ -21,4 +21,7 @@ class Record (val block: BigInteger,
     val rights = info.rights
     val held = info.held
     val files = info.files
+
+    val isSip = info.isSip
+    val isAip = info.isAip
 }
