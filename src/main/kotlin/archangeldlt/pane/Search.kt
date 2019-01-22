@@ -123,6 +123,17 @@ class SearchResult(record : Record) : View() {
                 }
             }
         }
+        if (record.isSip) {
+            hbox {
+                region {
+                    hgrow = Priority.SOMETIMES
+                }
+                button("Create AIP") {
+                    action { }
+                    prefWidth = 150.0
+                }
+            }
+        }
         fieldset {
             field("Supplier") {
                 textfield(record.supplier) {
