@@ -13,7 +13,7 @@ class Record (val block: BigInteger,
               data: JsonObject,
               fileList: JsonArray
 ) {
-    private val info = Package(key, data, fileList)
+    val info = Package.fromEvent(key, data, fileList)
 
     val citation = info.citation
     val supplier = info.supplier

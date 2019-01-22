@@ -10,29 +10,27 @@ import javafx.collections.ObservableList
 import javafx.scene.control.TableView
 import tornadofx.*
 
-class Search(controller: ArchangelController) : View("Search Archangel") {
-    private val controller = controller
-    private val searchBox = SearchBox()
-    private val searchResults = SearchResults()
+class Search(private val controller: ArchangelController) : View("Search Archangel") {
+    private val searchBox = SearchBox { searchTerm -> doSearch(searchTerm) }
+    private val searchResults = SearchResults { record -> createAip(record) }
 
     override val root = vbox {
         this@vbox += searchBox
         this@vbox += searchResults
     }
 
-    init {
-        searchBox.setOnSearch { searchTerm -> doSearch(searchTerm) }
-    }
-
     private fun doSearch(searchTerm : String) {
         val results = controller.search(searchTerm)
         searchResults.setResults(searchTerm, results)
     }
+
+    private fun createAip(record: Record) {
+        controller.createAip(record)
+    }
 }
 
-class SearchBox : View() {
+class SearchBox(private val onSearch: (searchTerm: String)->Unit) : View() {
     private val input = SimpleStringProperty()
-    private lateinit var onSearch: (searchTerm: String)->Unit
 
     init {
         resetInput()
@@ -52,10 +50,6 @@ class SearchBox : View() {
         }
     }
 
-    fun setOnSearch(handler: (searchTerm: String)->Unit) {
-        onSearch = handler
-    }
-
     private fun doSearch() {
         val term = input.value.trim()
         if (term.isEmpty())
@@ -71,7 +65,7 @@ class SearchBox : View() {
     }
 }
 
-class SearchResults : View() {
+class SearchResults(private val onCreateAip: (sip: Record)->Unit) : View() {
     private var termLabel = SimpleStringProperty()
     private var countLabel = SimpleStringProperty()
     private val results = FXCollections.observableArrayList<Record>()
@@ -91,7 +85,7 @@ class SearchResults : View() {
         listview(results) {
             cellFormat {
                 graphic = stackpane {
-                    this += SearchResult(it)
+                    this += SearchResult(it, onCreateAip)
                 }
             }
             vboxConstraints {
@@ -112,7 +106,9 @@ class SearchResults : View() {
     }
 }
 
-class SearchResult(record : Record) : View() {
+class SearchResult(private val record : Record,
+                   private val onCreateAip: (sip: Record)->Unit)
+    : View() {
     override val root = form {
         if (record.isAip) {
             fieldset {
@@ -129,7 +125,7 @@ class SearchResult(record : Record) : View() {
                     hgrow = Priority.SOMETIMES
                 }
                 button("Create AIP") {
-                    action { }
+                    action { onCreateAip(record) }
                     prefWidth = 150.0
                 }
             }

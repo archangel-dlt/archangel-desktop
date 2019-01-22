@@ -27,13 +27,13 @@ class Package {
 
     val files = FXCollections.observableArrayList<PackageFile>()
 
-    constructor() {
+    private constructor() {
         key = UUID.randomUUID().toString()
         isSip = true
         isAip = false
     }
 
-    constructor(eventKey: String, data : JsonObject, fileList : JsonArray) {
+    private constructor(eventKey: String, data : JsonObject, fileList : JsonArray) {
         key = eventKey
         citationProperty.value = data.getString("citation", "")
         supplierProperty.value = data.getString("supplier", "")
@@ -69,6 +69,18 @@ class Package {
             add("timestamp", DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
         }
         return json.build()
+    }
+
+    companion object {
+        fun makeSip() : Package {
+            return Package()
+        }
+        fun makeAip(sip: Package) : Package {
+            return Package()
+        }
+        fun fromEvent(eventKey: String, data : JsonObject, fileList : JsonArray) : Package {
+            return Package(eventKey, data, fileList)
+        }
     }
 }
 

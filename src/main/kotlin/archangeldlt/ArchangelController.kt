@@ -1,8 +1,10 @@
 package archangeldlt
 
+import archangeldlt.dialog.CreateAIP
 import archangeldlt.dialog.CreateSIP
 import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
+import archangeldlt.ethereum.Package
 import archangeldlt.dialog.Settings
 import org.web3j.crypto.WalletUtils
 import tornadofx.Controller
@@ -56,6 +58,11 @@ class ArchangelController : Controller() {
 
     fun createSip() {
         CreateSIP(this).openModal()
+    }
+
+    fun createAip(record: Record) {
+        val aip = Package.makeAip(record.info)
+        CreateAIP(aip,this).openModal()
     }
 
     fun characterizeFiles(files : List<File>) : List<JsonObject> {

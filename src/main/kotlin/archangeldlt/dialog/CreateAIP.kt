@@ -3,6 +3,7 @@ package archangeldlt.dialog
 import archangeldlt.ArchangelController
 import archangeldlt.ethereum.Package
 import archangeldlt.ethereum.PackageFile
+import archangeldlt.ethereum.Record
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.collections.FXCollections
 import javafx.scene.control.Button
@@ -12,15 +13,15 @@ import javafx.stage.FileChooser
 import tornadofx.*
 import java.io.File
 
-class CreateSIP(val controller: ArchangelController) : View("New SIP") {
+class CreateAIP(private val aip: Package,
+                private val controller: ArchangelController)
+    : View("New AIP") {
     private lateinit var advanceButton: Button
 
-    private val sip = Package.makeSip()
-    private val detailsFilled = sip.supplierProperty.isNotEmpty()
-        .and(sip.creatorProperty.isNotEmpty())
-        .and(sip.rightsProperty.isNotEmpty())
-        .and(sip.heldProperty.isNotEmpty())
-
+    private val detailsFilled = aip.supplierProperty.isNotEmpty()
+        .and(aip.creatorProperty.isNotEmpty())
+        .and(aip.rightsProperty.isNotEmpty())
+        .and(aip.heldProperty.isNotEmpty())
 
     private val readyToUpload = SimpleBooleanProperty(false)
 
@@ -43,28 +44,28 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
         }
         fieldset {
             field("Supplier") {
-                textfield(sip.supplierProperty) {
+                textfield(aip.supplierProperty) {
                     disableProperty().bind(readyToUpload)
                 }
             }
             field("Creator") {
-                textfield(sip.creatorProperty) {
+                textfield(aip.creatorProperty) {
                     disableProperty().bind(readyToUpload)
                 }
             }
             field()
             field("Rights Statement") {
-                textfield(sip.rightsProperty) {
+                textfield(aip.rightsProperty) {
                     disableProperty().bind(readyToUpload)
                 }
             }
             field("Held By") {
-                textfield(sip.heldProperty) {
+                textfield(aip.heldProperty) {
                     disableProperty().bind(readyToUpload)
                 }
             }
         }
-        tableview(sip.files) {
+        tableview(aip.files) {
             readonlyColumn("Path", PackageFile::path)
             readonlyColumn("File name", PackageFile::name)
             readonlyColumn("Type", PackageFile::type)
@@ -143,14 +144,14 @@ class CreateSIP(val controller: ArchangelController) : View("New SIP") {
         runAsync {
             val fileJson = controller.characterizeFiles(files)
             fileJson.forEach {
-                sip.files.add(PackageFile(it))
+                aip.files.add(PackageFile(it))
             }
         }
     }
 
     private fun uploadSIP() {
-        val payload = sip.toJSON()
-        controller.store(sip.key, payload)
+        val payload = aip.toJSON()
+        controller.store(aip.key, payload)
         close()
     }
 }
