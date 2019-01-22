@@ -33,6 +33,19 @@ class Package {
         isAip = false
     }
 
+    private constructor(sip: Package) {
+        key = sip.key
+        citationProperty.value = sip.citationProperty.value
+        supplierProperty.value = sip.supplierProperty.value
+        creatorProperty.value = sip.creatorProperty.value
+        rightsProperty.value = sip.rightsProperty.value
+        heldProperty.value = sip.heldProperty.value
+        isSip = false
+        isAip = true
+
+        files.addAll(sip.files)
+    }
+
     private constructor(eventKey: String, data : JsonObject, fileList : JsonArray) {
         key = eventKey
         citationProperty.value = data.getString("citation", "")
@@ -53,7 +66,8 @@ class Package {
         val data = JsonBuilder()
         with (data) {
             add("key", key)
-            add("pack", "sip")
+            add("pack", if (isAip) { "aip" } else { "sip" })
+            add("citation", citation)
             add("supplier", supplier)
             add("creator", creator)
             add("rights", rights)
@@ -76,7 +90,7 @@ class Package {
             return Package()
         }
         fun makeAip(sip: Package) : Package {
-            return Package()
+            return Package(sip)
         }
         fun fromEvent(eventKey: String, data : JsonObject, fileList : JsonArray) : Package {
             return Package(eventKey, data, fileList)
