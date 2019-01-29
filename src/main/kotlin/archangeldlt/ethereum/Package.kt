@@ -62,7 +62,7 @@ class Package {
         }
     }
 
-    fun toJSON() : JsonObject {
+    fun toJSON(includeFilenames: Boolean) : JsonObject {
         val data = JsonBuilder()
         with (data) {
             add("key", key)
@@ -74,7 +74,7 @@ class Package {
             add("held", held)
         }
 
-        val fileJson = files.map { it.toJson() }
+        val fileJson = files.map { it.toJson(includeFilenames || isAip) }
 
         val json = JsonBuilder()
         with (json) {
@@ -117,9 +117,13 @@ class PackageFile {
     val size : Int
     val lastModified : LocalDateTime
 
-    fun toJson() : JsonObject {
+    fun toJson(includeFilenames: Boolean) : JsonObject {
         val fileJson = JsonBuilder()
         with (fileJson) {
+            if (includeFilenames) {
+                add("path", path)
+                add("name", name)
+            }
             add("type", type)
             add("puid", puid)
             add("sha256_hash", hash)

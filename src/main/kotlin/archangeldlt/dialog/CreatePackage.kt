@@ -6,6 +6,8 @@ import archangeldlt.ethereum.PackageFile
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.control.Button
+import javafx.scene.control.CheckBox
+import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
@@ -17,9 +19,21 @@ open class CreatePackage(protected val xip: Package,
                     private val label: String)
     : View("New ${label}") {
     private lateinit var advanceButton: Button
+    private lateinit var fileTable: TableView<PackageFile>
 
     protected open fun detailsFilled() : BooleanBinding = SimpleBooleanProperty(true).toBinding()
     protected val readyToUpload = SimpleBooleanProperty(false)
+    protected val includeFiles = SimpleBooleanProperty(true)
+
+    protected val includeFilesToggle = CheckBox()
+
+    init {
+        includeFilesToggle.bind(includeFiles)
+        includeFilesToggle.visibleProperty().bind(readyToUpload.not())
+        if (xip.isAip) {
+            includeFilesToggle.disableProperty().value = true
+        }
+    }
 
     override val root = form {
         hbox {
@@ -79,10 +93,12 @@ open class CreatePackage(protected val xip: Package,
             readonlyColumn("Size", PackageFile::size)
             readonlyColumn("Last Modified", PackageFile::lastModified)
 
-            columns[0].visibleProperty().bind(readyToUpload.not())
-            columns[1].visibleProperty().bind(readyToUpload.not())
+            columns[1].graphic = includeFilesToggle
+            columns[0].visibleProperty().bind(includeFiles.or(readyToUpload.not()))
+            columns[1].visibleProperty().bind(includeFiles.or(readyToUpload.not()))
             columnResizePolicy = SmartResize.POLICY
             vgrow = Priority.ALWAYS
+            fileTable = this
         }
         if (xip.isSip) {
             hbox {
@@ -109,6 +125,7 @@ open class CreatePackage(protected val xip: Package,
     private fun previous() {
         readyToUpload.value = false
         advanceButton.text = "Create ${label} »»"
+        SmartResize.POLICY.requestResize(fileTable)
     }
 
     private fun advance() {
@@ -157,7 +174,7 @@ open class CreatePackage(protected val xip: Package,
     }
 
     private fun upload() {
-        val payload = xip.toJSON()
+        val payload = xip.toJSON(includeFiles.value)
         controller.store(xip.key, payload)
         close()
     }
