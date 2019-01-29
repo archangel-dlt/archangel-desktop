@@ -62,6 +62,12 @@ class Package {
         }
     }
 
+    fun hasFilenames() : Boolean {
+        return files.any {
+            it.path.isNotEmpty() || it.name.isNotEmpty()
+        }
+    }
+
     fun toJSON(includeFilenames: Boolean) : JsonObject {
         val data = JsonBuilder()
         with (data) {

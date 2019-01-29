@@ -155,6 +155,10 @@ class SearchResult(private val record : Record,
             }
         }
         tableview(record.files) {
+            if (record.hasFilenames) {
+                readonlyColumn("Path", PackageFile::path)
+                readonlyColumn("Name", PackageFile::name)
+            }
             readonlyColumn("Type", PackageFile::type)
             readonlyColumn("Puid", PackageFile::puid)
             readonlyColumn("Hash", PackageFile::hash)
