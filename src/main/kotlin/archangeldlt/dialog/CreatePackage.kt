@@ -155,13 +155,13 @@ open class CreatePackage(protected val xip: Package,
         droidFiles(chosen)
     }
 
-    private fun droidFiles(directory: File) {
+    private fun droidFiles(directory: File?) {
         if (directory == null)
             return
         droidFiles(listOf(directory))
     }
 
-    private fun droidFiles(files: List<File>) {
+    private fun droidFiles(files: List<File>?) {
         if (files == null)
             return
 
