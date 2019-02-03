@@ -112,7 +112,7 @@ class PackageFile {
         puid = f.getString("puid", "")
         hash = f.getString("sha256_hash", "")
         size = fileSize(f.get("size"))
-        lastModified = LocalDateTime.parse(f.getString("last_modified"))
+        lastModified = f.getString("last_modified", "")
     }
 
     val path : String
@@ -121,7 +121,7 @@ class PackageFile {
     val puid : String
     val hash : String
     val size : Int
-    val lastModified : LocalDateTime
+    val lastModified : String
 
     fun toJson(includeFilenames: Boolean) : JsonObject {
         val fileJson = JsonBuilder()
@@ -134,7 +134,7 @@ class PackageFile {
             add("puid", puid)
             add("sha256_hash", hash)
             add("size", size)
-            add("last_modified", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(lastModified))
+            add("last_modified", lastModified)
         }
         return fileJson.build()
     }
@@ -143,8 +143,10 @@ class PackageFile {
         private fun fileSize(o : JsonValue?) : Int {
             if (o == null)
                 return 0
-            if (o.valueType == JsonValue.ValueType.STRING)
-                return (o as JsonString).string.toInt()
+            if (o.valueType == JsonValue.ValueType.STRING) {
+                val s = (o as JsonString).string
+                return if (s != "") s.toInt() else 0
+            }
             if (o.valueType == JsonValue.ValueType.NUMBER)
                 return (o as JsonNumber).intValue()
             return 0
