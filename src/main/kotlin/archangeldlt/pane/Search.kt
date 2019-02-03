@@ -161,9 +161,12 @@ class SearchResult(private val record : Record,
             }
             readonlyColumn("Type", PackageFile::type)
             readonlyColumn("Puid", PackageFile::puid)
-            readonlyColumn("Hash", PackageFile::hash)
             readonlyColumn("Size", PackageFile::size)
             readonlyColumn("Last Modified", PackageFile::lastModified)
+            readonlyColumn("Checksum", PackageFile::hash)
+            if (record.hasUuid) {
+                readonlyColumn("File UUID", PackageFile::uuid)
+            }
             resizeColumnsToFitContent()
             fixedCellSize = 24.0
 

@@ -89,14 +89,15 @@ open class CreatePackage(protected val xip: Package,
             readonlyColumn("File name", PackageFile::name)
             readonlyColumn("Type", PackageFile::type)
             readonlyColumn("Puid", PackageFile::puid)
-            readonlyColumn("Hash", PackageFile::hash)
             readonlyColumn("Size", PackageFile::size)
             readonlyColumn("Last Modified", PackageFile::lastModified)
+            readonlyColumn("Checksum", PackageFile::hash)
+            readonlyColumn("File UUID", PackageFile::uuid)
 
             columns[1].graphic = includeFilesToggle
             columns[0].visibleProperty().bind(includeFiles.or(readyToUpload.not()))
             columns[1].visibleProperty().bind(includeFiles.or(readyToUpload.not()))
-            columnResizePolicy = SmartResize.POLICY
+            resizeColumnsToFitContent()
             vgrow = Priority.ALWAYS
             fileTable = this
         }

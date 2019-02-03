@@ -67,6 +67,11 @@ class Package {
             it.path.isNotEmpty() || it.name.isNotEmpty()
         }
     }
+    fun hasUuid()  : Boolean {
+        return files.any {
+            it.uuid.isNotEmpty()
+        }
+    }
 
     fun toJSON(includeFilenames: Boolean) : JsonObject {
         val data = JsonBuilder()
@@ -113,6 +118,7 @@ class PackageFile {
         hash = f.getString("sha256_hash", "")
         size = fileSize(f.get("size"))
         lastModified = f.getString("last_modified", "")
+        uuid = f.getString("uuid", "")
     }
 
     val path : String
@@ -122,6 +128,7 @@ class PackageFile {
     val hash : String
     val size : Int
     val lastModified : String
+    val uuid : String
 
     fun toJson(includeFilenames: Boolean) : JsonObject {
         val fileJson = JsonBuilder()
@@ -135,6 +142,7 @@ class PackageFile {
             add("sha256_hash", hash)
             add("size", size)
             add("last_modified", lastModified)
+            add("uuid", uuid)
         }
         return fileJson.build()
     }

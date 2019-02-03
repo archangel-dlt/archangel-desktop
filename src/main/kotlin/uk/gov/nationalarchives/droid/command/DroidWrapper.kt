@@ -3,15 +3,12 @@ package uk.gov.nationalarchives.droid.command
 import au.com.bytecode.opencsv.CSVReader
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.RandomStringUtils
-import tornadofx.JsonBuilder
 import uk.gov.nationalarchives.droid.core.interfaces.config.DroidGlobalProperty
 import uk.gov.nationalarchives.droid.core.interfaces.config.RuntimeConfig
 import java.io.File
 import java.util.*
 import javax.json.Json
-import javax.json.JsonBuilderFactory
 import javax.json.JsonObject
-import javax.json.JsonObjectBuilder
 
 class DroidWrapper {
     companion object {
@@ -69,13 +66,14 @@ class DroidWrapper {
                 "PUID" to "puid")
 
             val fileJson = csvReader.readAll().map { line ->
-                    val json = Json.createObjectBuilder()
-                    columnNames.mapIndexed { index, key ->
-                        if (desiredColumns.containsKey(key) && line[index].isNotBlank()) {
-                            json.add(desiredColumns[key], line[index])
-                        }
+                val json = Json.createObjectBuilder()
+                columnNames.mapIndexed { index, key ->
+                    if (desiredColumns.containsKey(key) && line[index].isNotBlank()) {
+                        json.add(desiredColumns[key], line[index])
                     }
-                    json.build()
+                }
+                json.add("uuid", UUID.randomUUID().toString())
+                json.build()
             }
 
             return fileJson

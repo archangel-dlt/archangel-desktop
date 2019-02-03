@@ -26,4 +26,5 @@ class Record (val block: BigInteger,
     val isAip = info.isAip
 
     val hasFilenames = info.hasFilenames()
+    val hasUuid = info.hasUuid()
 }
