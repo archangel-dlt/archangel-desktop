@@ -46,7 +46,7 @@ class Ethereum() {
                 matches(it.supplier, searchTerm) ||
                 matches(it.held, searchTerm) ||
                 matches(it.citation, searchTerm) ||
-                fileHashMatch(it.files, searchTerm)
+                fileMatch(it.files, searchTerm)
             }
             .sortedByDescending { it.block }
 
@@ -141,6 +141,22 @@ class Ethereum() {
             return files.find {
                 f -> f.hash.toLowerCase() == searchTerm
             } != null
+        }
+        fun fileUuidMatch(files : List<PackageFile>, searchTerm : String) : Boolean {
+            return files.find {
+                    f -> f.uuid.toLowerCase() == searchTerm
+            } != null
+        }
+        fun fileNameMatch(files : List<PackageFile>, searchTerm : String) : Boolean {
+            return files.find {
+                    f -> f.name.toLowerCase().indexOf(searchTerm) != -1
+            } != null
+        }
+
+        fun fileMatch(files: List<PackageFile>, searchTerm: String) : Boolean {
+            return fileHashMatch(files, searchTerm) ||
+                    fileUuidMatch(files, searchTerm) ||
+                    fileNameMatch(files, searchTerm)
         }
     }
 }
