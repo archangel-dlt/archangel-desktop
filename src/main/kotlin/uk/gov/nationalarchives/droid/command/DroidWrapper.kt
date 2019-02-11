@@ -9,6 +9,9 @@ import java.io.File
 import java.util.*
 import javax.json.Json
 import javax.json.JsonObject
+import java.text.SimpleDateFormat
+
+
 
 class DroidWrapper {
     companion object {
@@ -86,10 +89,8 @@ class DroidWrapper {
 
         private fun uniqueName() : String {
             val millis = System.currentTimeMillis()
-            var datetime = Date().toGMTString()
-            datetime = datetime.replace(" ", "")
-            datetime = datetime.replace(":", "")
-
+            val df = SimpleDateFormat("ddMMMyyyyHHmmss")
+            val datetime = df.format(Date())
             val rndchars = RandomStringUtils.randomAlphanumeric(16)
             val filename = "${rndchars }_${datetime}_${millis}"
 
