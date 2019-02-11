@@ -16,7 +16,8 @@ import java.io.File
 
 open class CreatePackage(protected val xip: Package,
                     private val controller: ArchangelController,
-                    private val label: String)
+                    private val label: String,
+                    private val canAddFiles: Boolean = true)
     : View("New ${label}") {
     private lateinit var advanceButton: Button
     private lateinit var fileTable: TableView<PackageFile>
@@ -109,7 +110,7 @@ open class CreatePackage(protected val xip: Package,
             vgrow = Priority.ALWAYS
             fileTable = this
         }
-        if (xip.isSip) {
+        if (xip.isSip && canAddFiles) {
             hbox {
                 region {
                     hgrow = Priority.SOMETIMES

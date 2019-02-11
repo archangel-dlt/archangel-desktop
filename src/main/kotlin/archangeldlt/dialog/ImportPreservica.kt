@@ -6,17 +6,17 @@ import javafx.stage.FileChooser
 import java.io.File
 import java.io.FileReader
 import java.io.StringWriter
-import javax.xml.transform.OutputKeys
+import javax.json.Json
+import javax.json.JsonObject
 import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
 class ImportPreservica(
-    val controller: ArchangelController,
-    val sip: Package)
-    : CreatePackage(sip, controller, "Preservica SIP") {
-
+    sip: Package,
+    controller: ArchangelController
+) : CreatePackage(sip, controller, "SIP", false) {
     override fun detailsFilled() =
         xip.supplierProperty.isNotEmpty()
         .and(xip.creatorProperty.isNotEmpty())
@@ -32,7 +32,7 @@ class ImportPreservica(
 
             val sip = loadPreservicaSIP(preservica!!)
 
-            ImportPreservica(controller, sip).openModal()
+            ImportPreservica(sip, controller).openModal()
         } // launch
 
         fun findPreservicaSip(controller: ArchangelController): File? {
@@ -44,6 +44,27 @@ class ImportPreservica(
         } // findPreservicaSip
 
         fun loadPreservicaSIP(sipFile: File): Package {
+            val sipString = readSipFile(sipFile)
+
+            val sipJson = sipStringToJson(sipString)
+
+            val data = sipJson.getJsonObject("data")
+            var files = sipJson.getJsonArray("files")
+            return Package.fromEvent(
+                data.getString("key"),
+                data,
+                files
+            )
+        } // loadPreservicaSIP
+
+        fun sipStringToJson(sipString: String): JsonObject {
+            val reader = Json.createReader(sipString.reader())
+            val json = reader.readObject()
+            reader.close()
+            return json
+        }
+
+        fun readSipFile(sipFile: File): String {
             val transformer = sipTransformer()
 
             val importedSip = StringWriter()
@@ -51,9 +72,9 @@ class ImportPreservica(
                 StreamSource(FileReader(sipFile)),
                 StreamResult(importedSip)
             )
-            println(importedSip)
-            return Package.makeSip()
-        }
+
+            return importedSip.toString()
+        } // readSipString
 
         fun sipTransformer(): Transformer {
             val factory = TransformerFactory.newInstance()
