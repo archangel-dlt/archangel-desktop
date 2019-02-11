@@ -39,10 +39,12 @@ dependencies {
     compile "org.openjfx:javafx-base:11:${platform}"
     compile "org.openjfx:javafx-graphics:11:${platform}"
     compile "org.openjfx:javafx-controls:11:${platform}"
-    compile 'org.apache.ant:ant-compress:1.5' // 1.4 has a bad pom
+    compile 'org.apache.ant:ant-compress:1.5'
     compile 'uk.gov.nationalarchives:droid:6.4'
-    compile 'uk.gov.nationalarchives:droid-command-line:6.4'
-    compile 'org.slf4j:slf4j-simple:1.7.25'
+    compile('uk.gov.nationalarchives:droid-command-line:6.4'){
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
+    compile 'org.slf4j:slf4j-log4j12:1.7.25'
 }
 
 jar {
