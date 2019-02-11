@@ -5,7 +5,13 @@
   <xsl:output method="text"/>
 
   <xsl:template match="/">
-    [
+    {
+    "data": {
+    "key": "<xsl:value-of select="/xip:XIP/xip:Collections/xip:Collection/xip:CollectionRef"/>",
+    "pack": "sip",
+    "collection": "<xsl:value-of select="/xip:XIP/xip:Collections/xip:Collection/xip:Title"/>"
+    },
+    "files": [
       <xsl:for-each select="/xip:XIP/xip:Files/xip:File">
       {
         "path":"<xsl:value-of select="xip:WorkingPath"/>",
@@ -19,6 +25,7 @@
       }<xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
       </xsl:for-each>
     ]
+    }
   </xsl:template>
 
   <xsl:template name="type">

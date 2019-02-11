@@ -2,6 +2,7 @@ package archangeldlt
 
 import archangeldlt.dialog.CreateAIP
 import archangeldlt.dialog.CreateSIP
+import archangeldlt.dialog.ImportPreservica
 import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
 import archangeldlt.ethereum.Package
@@ -58,6 +59,9 @@ class ArchangelController : Controller() {
 
     fun createSip() {
         CreateSIP(this).openModal()
+    }
+    fun importPreservica() {
+        ImportPreservica.launch(this)
     }
 
     fun createAip(record: Record) {

@@ -21,8 +21,13 @@ class TabBox : View("Archangel") {
         hbox {
             menubar {
                 visibleProperty().bind(controller.ethereum.hasWritePermission())
-                menuaction("New SIP").action {
-                    controller.createSip()
+                menu("SIPs") {
+                    item("New SIP").action {
+                        controller.createSip()
+                    }
+                    item("Import Preservica SIP").action {
+                        controller.importPreservica()
+                    }
                 }
             }
             region {
