@@ -42,6 +42,7 @@ class Ethereum() {
 
         val results = events
             .filter { it ->
+                matches(it.title, searchTerm) ||
                 matches(it.creator, searchTerm) ||
                 matches(it.supplier, searchTerm) ||
                 matches(it.held, searchTerm) ||
