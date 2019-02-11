@@ -62,6 +62,14 @@ open class CreatePackage(protected val xip: Package,
             }
         }
         fieldset {
+            field("Title/Collection") {
+                textfield(xip.titleProperty) {
+                    disableProperty().bind(readyToUpload)
+                }
+            }
+        }
+
+        fieldset {
             field("Supplier") {
                 textfield(xip.supplierProperty) {
                     disableProperty().bind(readyToUpload.or(xip.isAip))

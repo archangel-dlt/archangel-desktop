@@ -15,7 +15,8 @@ import java.io.File
 class CreateSIP(val controller: ArchangelController)
     : CreatePackage(Package.makeSip(), controller, "SIP") {
 
-    override fun detailsFilled() = xip.supplierProperty.isNotEmpty()
+    override fun detailsFilled() =
+        xip.supplierProperty.isNotEmpty()
         .and(xip.creatorProperty.isNotEmpty())
         .and(xip.rightsProperty.isNotEmpty())
         .and(xip.heldProperty.isNotEmpty())
