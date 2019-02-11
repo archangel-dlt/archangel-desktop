@@ -130,6 +130,16 @@ class SearchResult(private val record : Record,
                 }
             }
         }
+        if (record.title.isNotEmpty()) {
+            fieldset {
+                field("Title/Collection") {
+                    textfield(record.title) {
+                        setEditable(false)
+                    }
+                }
+            }
+        }
+
         fieldset {
             field("Supplier") {
                 textfield(record.supplier) {
