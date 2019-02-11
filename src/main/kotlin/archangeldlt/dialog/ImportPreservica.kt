@@ -30,7 +30,7 @@ class ImportPreservica(
             if (preservica == null)
                 return
 
-            val sip = loadPreservicaSIP(preservica!!)
+            val sip = loadPreservicaSIP(preservica)
 
             ImportPreservica(sip, controller).openModal()
         } // launch
@@ -78,7 +78,7 @@ class ImportPreservica(
 
         fun sipTransformer(): Transformer {
             val factory = TransformerFactory.newInstance()
-            val xsltResource = javaClass.getResourceAsStream("/preservica-extract.xsl")
+            val xsltResource = ImportPreservica::class.java.getResourceAsStream("/preservica-extract.xsl")
             val xsltSource = StreamSource(xsltResource)
             val transformer = factory.newTransformer(xsltSource)
             return transformer
