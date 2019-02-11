@@ -32,6 +32,7 @@ def platform = javaFxPlatform()
 
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    compile 'org.jetbrains.kotlin:kotlin-reflect'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0'
     compile group: 'org.web3j', name: 'core', version: '4.0.4'
     compile 'no.tornado:tornadofx:1.7.17'
@@ -42,8 +43,6 @@ dependencies {
     compile 'uk.gov.nationalarchives:droid:6.4'
     compile 'uk.gov.nationalarchives:droid-command-line:6.4'
     compile 'org.slf4j:slf4j-simple:1.7.25'
-    compile 'org.slf4j:slf4j-log4j12:1.7.25'
-
 }
 
 jar {
