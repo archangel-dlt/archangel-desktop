@@ -7,6 +7,8 @@ import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
 import archangeldlt.ethereum.Package
 import archangeldlt.dialog.Settings
+import com.excelmicro.lib.fx.toaster.Notification
+import com.excelmicro.lib.fx.toaster.NotificationPane
 import org.web3j.crypto.WalletUtils
 import tornadofx.Controller
 import uk.gov.nationalarchives.droid.command.DroidWrapper
@@ -17,9 +19,12 @@ class ArchangelController : Controller() {
     val ethereum = Ethereum()
     val events = ethereum.events
     val conf = ArchangelConfig(app.config)
+    val notifier = NotificationPane()
+
+    private val ethMsg = { msg: String -> this.toast("Ethereum", msg) }
 
     init {
-        ethereum.start(conf.endpoint, conf.userAddress)
+        ethereum.start(conf.endpoint, conf.userAddress, ethMsg)
         DroidWrapper.setupDroid()
     }
 
@@ -33,7 +38,7 @@ class ArchangelController : Controller() {
 
     fun store(key: String, payload: JsonObject) {
         val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
-        ethereum.store(key, payload, creds)
+        ethereum.store(key, payload, creds, ethMsg)
     }
 
     fun openSettings() {
@@ -53,7 +58,7 @@ class ArchangelController : Controller() {
             conf.endpoint = newEndpoint
             conf.userAddress = newAddress
 
-            ethereum.restart(conf.endpoint, conf.userAddress)
+            ethereum.restart(conf.endpoint, conf.userAddress, ethMsg)
         }
     }
 
@@ -73,6 +78,10 @@ class ArchangelController : Controller() {
         val fileNames = files.map { it->it.absolutePath }
 
         return DroidWrapper.characterizeFile(fileNames)
+    }
+
+    fun toast(title: String, msg: String) {
+        notifier.notify(Notification(title, msg))
     }
 }
 

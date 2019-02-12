@@ -26,13 +26,21 @@ class Ethereum() {
     private val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
     private val writePermission = SimpleBooleanProperty(false)
 
-    fun start(endpoint: String, userAddress: String) {
-        startWeb3(endpoint, userAddress)
+    fun start(
+        endpoint: String,
+        userAddress: String,
+        callback: (String) -> Unit
+    ) {
+        startWeb3(endpoint, userAddress, callback)
     }
 
-    fun restart(endpoint: String, userAddress: String) {
+    fun restart(
+        endpoint: String,
+        userAddress: String,
+        callback: (String) -> Unit
+    ) {
         shutdown()
-        startWeb3(endpoint, userAddress)
+        startWeb3(endpoint, userAddress, callback)
     }
 
     fun search(phrase: String) : List<Record> {
@@ -41,7 +49,7 @@ class Ethereum() {
         val searchTerm = phrase.toLowerCase()
 
         val results = events
-            .filter { it ->
+            .filter {
                 matches(it.title, searchTerm) ||
                 matches(it.creator, searchTerm) ||
                 matches(it.supplier, searchTerm) ||
@@ -63,7 +71,7 @@ class Ethereum() {
         return writePermission
     }
 
-    fun store(key: String, payload: javax.json.JsonObject, creds: Credentials) {
+    fun store(key: String, payload: javax.json.JsonObject, creds: Credentials, callback: (String) -> Unit) {
         GlobalScope.launch {
             val writeableArchangel = loadContract(RawTransactionManager(web3j, creds))
 
@@ -71,15 +79,19 @@ class Ethereum() {
                 key,
                 payload.toString()
             ).send()
-            println("got tx receipt: " + txReceipt.toString())
+            callback(txReceipt.status)
         }
-        println("store()")
+
     }
 
-    private fun startWeb3(endpoint: String, userAddress: String) {
+    private fun startWeb3(
+        endpoint: String,
+        userAddress: String,
+        callback: (String) -> Unit
+    ) {
         web3j = Web3j.build(HttpService(endpoint))
 
-        println("Connected to Ethereum client version: " + web3j.web3ClientVersion().send().web3ClientVersion)
+        callback("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
 
         val archangel = loadContract(ReadonlyTransactionManager(web3j, userAddress))
 

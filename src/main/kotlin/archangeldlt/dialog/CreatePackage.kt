@@ -153,6 +153,9 @@ open class CreatePackage(protected val xip: Package,
 
         val chosen = fileChooser.showOpenMultipleDialog(controller.primaryStage)
 
+        val m = if (chosen.size == 1) { "one file" } else { "${chosen.size} files" }
+        controller.toast("Droid", "Characterising ${m} ...")
+
         droidFiles(chosen)
     }
 
@@ -161,6 +164,8 @@ open class CreatePackage(protected val xip: Package,
         dirChooser.title = "Add Directory Contents To ${label}"
 
         val chosen = dirChooser.showDialog(controller.primaryStage)
+
+        controller.toast("Droid", "Characterising directory ...")
 
         droidFiles(chosen)
     }

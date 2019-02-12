@@ -56,6 +56,8 @@ class TabBox : View("Archangel") {
             }
             vgrow = Priority.ALWAYS
         }
+        this.add(controller.notifier)
+
         prefWidth = 800.0
         prefHeight = 600.0
     }
