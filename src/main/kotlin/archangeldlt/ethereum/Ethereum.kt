@@ -71,17 +71,13 @@ class Ethereum() {
         return writePermission
     }
 
-    fun store(key: String, payload: javax.json.JsonObject, creds: Credentials, callback: (String) -> Unit) {
-        GlobalScope.launch {
-            val writeableArchangel = loadContract(RawTransactionManager(web3j, creds))
+    fun store(key: String, payload: javax.json.JsonObject, creds: Credentials) {
+        val writeableArchangel = loadContract(RawTransactionManager(web3j, creds))
 
-            val txReceipt = writeableArchangel.store(
-                key,
-                payload.toString()
-            ).send()
-            callback(txReceipt.status)
-        }
-
+        val txReceipt = writeableArchangel.store(
+            key,
+            payload.toString()
+        ).send()
     }
 
     private fun startWeb3(

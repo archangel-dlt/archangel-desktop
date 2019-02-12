@@ -9,9 +9,13 @@ import archangeldlt.ethereum.Package
 import archangeldlt.dialog.Settings
 import com.excelmicro.lib.fx.toaster.Notification
 import com.excelmicro.lib.fx.toaster.NotificationPane
+import javafx.concurrent.WorkerStateEvent
 import org.web3j.crypto.WalletUtils
 import tornadofx.Controller
+import tornadofx.fail
+import tornadofx.success
 import uk.gov.nationalarchives.droid.command.DroidWrapper
+import java.beans.EventHandler
 import java.io.File
 import javax.json.JsonObject
 
@@ -37,8 +41,12 @@ class ArchangelController : Controller() {
     }
 
     fun store(key: String, payload: JsonObject) {
-        val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
-        ethereum.store(key, payload, creds, ethMsg)
+        val task = runAsync {
+            val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
+            ethereum.store(key, payload, creds)
+        }
+        task.success { toast("Ethereum", "Package written") }
+        task.fail { toast("Ethereum", "Could not write package") }
     }
 
     fun openSettings() {

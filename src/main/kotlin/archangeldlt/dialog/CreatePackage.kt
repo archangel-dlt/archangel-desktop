@@ -189,6 +189,7 @@ open class CreatePackage(protected val xip: Package,
     }
 
     private fun upload() {
+        controller.toast(label, "Uploading to Ethereum")
         val payload = xip.toJSON(includeFiles.value)
         controller.store(xip.key, payload)
         close()
