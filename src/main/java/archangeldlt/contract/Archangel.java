@@ -79,6 +79,7 @@ public class Archangel extends Contract {
         _addresses = new HashMap<String, String>();
         _addresses.put("4", "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad");
         _addresses.put("3151", "0xdfacfbd00a7cefc913a46c32f824f1a78ffe1417");
+        _addresses.put("53419", "0xf68e8324254895bdc712355aa2aa2e5f557818fd");
     }
 
     @Deprecated
