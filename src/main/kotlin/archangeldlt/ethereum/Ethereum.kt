@@ -23,8 +23,14 @@ class Ethereum() {
     private var registrationEventSubscription: Disposable? = null
     private var updateEventsSubscription: Disposable? = null
     private lateinit var web3j: Web3j
-    private val archangelContractAddress = "0xb5ccf2f1d5eb411705d02f59f6b3d694268cfdad"
+    private lateinit var archangelContractAddress: String
     private val writePermission = SimpleBooleanProperty(false)
+
+    private val networkNames = mapOf(
+        "4" to "Rinkeby",
+        "3151" to "Archangel-Dev",
+        "53419" to "Archangel User Study"
+    )
 
     fun start(
         endpoint: String,
@@ -87,11 +93,15 @@ class Ethereum() {
     ) {
         web3j = Web3j.build(HttpService(endpoint))
 
-        callback("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
+        val networkId = web3j.netVersion().send().result
+        val networkName = findNetworkName(networkId)
+        archangelContractAddress = Archangel.getPreviouslyDeployedAddress(networkId)
+
+        callback("Connected to ${networkName} network")
 
         val archangel = loadContract(ReadonlyTransactionManager(web3j, userAddress))
 
-        val fromBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(2898300))
+        val fromBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(1))
         val lastBlock = DefaultBlockParameter.valueOf("latest")
 
         val registrationEvents = archangel.registrationEventFlowable(fromBlock, lastBlock)
@@ -105,6 +115,12 @@ class Ethereum() {
         }
 
         writePermission.value = archangel.hasPermission(userAddress).send()
+    }
+
+    private fun findNetworkName(networkId: String): String {
+        if (networkNames.containsKey(networkId))
+            return networkNames[networkId]!!
+        return "Unknown"
     }
 
     private fun newEvent(tag: String, block: BigInteger, addr: String, key: String, bodyStr: String) {
