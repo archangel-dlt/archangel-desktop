@@ -15,8 +15,38 @@ import org.web3j.tx.TransactionManager
 import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
 import kotlinx.coroutines.*
+import org.web3j.tx.gas.StaticGasProvider
 import javax.json.Json
 import javax.json.JsonValue
+
+data class NetworkDetails(
+    val id: String,
+    val name: String,
+    val fromBlock: Int,
+    val gasLimit: BigInteger,
+    val gasPrice: BigInteger
+)
+val Rinkeby = NetworkDetails(
+    "4",
+    "Rinkeby",
+    80380,
+    BigInteger.valueOf(7000000),
+    BigInteger.valueOf(10_000_000_000L)
+)
+val ArchangelDev = NetworkDetails(
+    "3151",
+    "Archangel Dev",
+    1,
+    BigInteger.valueOf(75_000_000L),
+    BigInteger.valueOf(22_000_000_000L)  // web3 default
+)
+val ArchangelUser = NetworkDetails(
+    "53419",
+    "Archangel User Study",
+    1,
+    BigInteger.valueOf(83_886_080L),
+    BigInteger.valueOf(22_000_000_000L)  // web3 default
+)
 
 class Ethereum() {
     val events = FXCollections.observableArrayList<Record>()
@@ -24,12 +54,13 @@ class Ethereum() {
     private var updateEventsSubscription: Disposable? = null
     private lateinit var web3j: Web3j
     private lateinit var archangelContractAddress: String
+    private lateinit var networkId: String
     private val writePermission = SimpleBooleanProperty(false)
 
-    private val networkNames = mapOf(
-        "4" to "Rinkeby",
-        "3151" to "Archangel-Dev",
-        "53419" to "Archangel User Study"
+    private val networks = mapOf(
+        Rinkeby.id to Rinkeby,
+        ArchangelDev.id to ArchangelDev,
+        ArchangelUser.id to ArchangelUser
     )
 
     fun start(
@@ -93,7 +124,7 @@ class Ethereum() {
     ) {
         web3j = Web3j.build(HttpService(endpoint))
 
-        val networkId = web3j.netVersion().send().result
+        networkId = web3j.netVersion().send().result
         val networkName = findNetworkName(networkId)
         archangelContractAddress = Archangel.getPreviouslyDeployedAddress(networkId)
 
@@ -118,8 +149,8 @@ class Ethereum() {
     }
 
     private fun findNetworkName(networkId: String): String {
-        if (networkNames.containsKey(networkId))
-            return networkNames[networkId]!!
+        if (networks.containsKey(networkId))
+            return networks[networkId]!!.name
         return "Unknown"
     }
 
@@ -147,7 +178,11 @@ class Ethereum() {
     }
 
     private fun loadContract (transactionManager: TransactionManager) : Archangel {
-        val gasProvider = DefaultGasProvider()
+        val network = networks[networkId]!!
+        val gasProvider = StaticGasProvider(
+            network.gasPrice,
+            network.gasLimit
+        )
 
         return Archangel.load(
             archangelContractAddress,
