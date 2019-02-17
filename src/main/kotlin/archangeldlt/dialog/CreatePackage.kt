@@ -104,8 +104,6 @@ open class CreatePackage(protected val xip: Package,
             readonlyColumn("File UUID", PackageFile::uuid)
 
             columns[1].graphic = includeFilesToggle
-            columns[0].visibleProperty().bind(includeFiles.or(readyToUpload.not()))
-            columns[1].visibleProperty().bind(includeFiles.or(readyToUpload.not()))
             resizeColumnsToFitContent()
             vgrow = Priority.ALWAYS
             fileTable = this
@@ -133,6 +131,9 @@ open class CreatePackage(protected val xip: Package,
     }
 
     private fun previous() {
+        fileTable.columns[0].visibleProperty().value = true
+        fileTable.columns[1].visibleProperty().value = true
+
         readyToUpload.value = false
         advanceButton.text = "Create ${label} »»"
         SmartResize.POLICY.requestResize(fileTable)
@@ -142,6 +143,9 @@ open class CreatePackage(protected val xip: Package,
         if (readyToUpload.value == false) {
             readyToUpload.value = true
             advanceButton.text = "Upload ${label}"
+
+            fileTable.columns[0].visibleProperty().value = includeFiles.value
+            fileTable.columns[1].visibleProperty().value = includeFiles.value
         } else {
             upload()
         }
