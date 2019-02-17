@@ -34,6 +34,7 @@ class ArchangelController : Controller() {
 
     fun shutdown() {
         ethereum.shutdown()
+        System.exit(0)
     }
 
     fun search(searchTerm: String) : List<Record> {
@@ -46,7 +47,7 @@ class ArchangelController : Controller() {
             ethereum.store(key, payload, creds)
         }
         task.success { toast("Ethereum", "Package written") }
-        task.fail { toast("Ethereum", "Could not write package") }
+        task.fail { it -> toast("Ethereum", "Could not write package: ${it.message}") }
     }
 
     fun openSettings() {
