@@ -23,10 +23,10 @@ open class CreatePackage(protected val xip: Package,
     private lateinit var fileTable: TableView<PackageFile>
 
     protected open fun detailsFilled() : BooleanBinding = SimpleBooleanProperty(true).toBinding()
-    protected val readyToUpload = SimpleBooleanProperty(false)
-    protected val includeFiles = SimpleBooleanProperty(true)
+    private val readyToUpload = SimpleBooleanProperty(false)
+    private val includeFiles = SimpleBooleanProperty(true)
 
-    protected val includeFilesToggle = CheckBox()
+    private val includeFilesToggle = CheckBox()
 
     init {
         includeFilesToggle.bind(includeFiles)
