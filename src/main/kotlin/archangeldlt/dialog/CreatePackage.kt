@@ -152,6 +152,8 @@ open class CreatePackage(protected val xip: Package,
         fileChooser.title = "Add Files To ${label}"
 
         val chosen = fileChooser.showOpenMultipleDialog(controller.primaryStage)
+        if (chosen == null)
+            return
 
         val m = if (chosen.size == 1) { "one file" } else { "${chosen.size} files" }
         controller.toast("Droid", "Characterising ${m} ...")
@@ -164,22 +166,19 @@ open class CreatePackage(protected val xip: Package,
         dirChooser.title = "Add Directory Contents To ${label}"
 
         val chosen = dirChooser.showDialog(controller.primaryStage)
+        if (chosen == null)
+            return
 
         controller.toast("Droid", "Characterising directory ...")
 
         droidFiles(chosen)
     }
 
-    private fun droidFiles(directory: File?) {
-        if (directory == null)
-            return
+    private fun droidFiles(directory: File) {
         droidFiles(listOf(directory))
     }
 
-    private fun droidFiles(files: List<File>?) {
-        if (files == null)
-            return
-
+    private fun droidFiles(files: List<File>) {
         runAsync {
             val fileJson = controller.characterizeFiles(files)
             fileJson.forEach {
