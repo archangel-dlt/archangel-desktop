@@ -7,17 +7,19 @@ import archangeldlt.ethereum.Ethereum
 import archangeldlt.ethereum.Record
 import archangeldlt.ethereum.Package
 import archangeldlt.dialog.Settings
+import archangeldlt.ethereum.PackageFile
+import archangeldlt.video.VideoUpload
 import com.excelmicro.lib.fx.toaster.Notification
 import com.excelmicro.lib.fx.toaster.NotificationPane
-import javafx.concurrent.WorkerStateEvent
 import org.web3j.crypto.WalletUtils
 import tornadofx.Controller
 import tornadofx.fail
+import tornadofx.finally
 import tornadofx.success
 import uk.gov.nationalarchives.droid.command.DroidWrapper
-import java.beans.EventHandler
 import java.io.File
 import javax.json.JsonObject
+
 
 class ArchangelController : Controller() {
     val ethereum = Ethereum()
@@ -41,13 +43,48 @@ class ArchangelController : Controller() {
         return ethereum.search(searchTerm)
     }
 
-    fun store(key: String, payload: JsonObject) {
-        val task = runAsync {
+    fun store(xip: Package, includeFiles: Boolean, label: String) {
+        toast(label, "Uploading to Ethereum")
+        val payload = xip.toJSON(includeFiles)
+
+        runAsync {
             val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
-            ethereum.store(key, payload, creds)
+            ethereum.store(xip.key, payload, creds)
+        }.success {
+            toast(label, "Package written")
+            characteriseVideos(xip)
+        }.fail {
+            toast(label, "Could not write package: ${it.message}")
         }
-        task.success { toast("Ethereum", "Package written") }
-        task.fail { it -> toast("Ethereum", "Could not write package: ${it.message}") }
+    }
+
+    fun characteriseVideos(xip: Package) {
+        val filesToUpload = xip.toCharacterise()
+        if (filesToUpload.size == 0)
+            return
+
+        val m = if (filesToUpload.size == 1) { "one file" } else { "${filesToUpload.size} files" }
+        toast("Video", "Uploading ${m} for video characterisation ...")
+
+        characteriseVideo(xip.key, filesToUpload, 0)
+    }
+
+    fun characteriseVideo(xipKey: String, files: List<PackageFile>, index: Int) {
+        if (index == files.size) return
+
+        runAsync {
+            VideoUpload(
+                xipKey,
+                files[index].uuid,
+                files[index].path
+            )
+        }.success {
+            toast("Video", "Uploaded ${files[index].name}")
+        }.fail {
+            toast("Video", "Upload failed: ${it.message}")
+        }.finally {
+            characteriseVideo(xipKey, files, index+1)
+        }
     }
 
     fun openSettings() {

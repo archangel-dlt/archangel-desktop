@@ -101,6 +101,10 @@ class Package {
         return json.build()
     }
 
+    fun toCharacterise() : List<PackageFile> {
+        return files.filter { it -> it.puid == "fmt/199" || it.puid == "x-fmt/384" }
+    }
+
     companion object {
         fun makeSip() : Package {
             return Package()

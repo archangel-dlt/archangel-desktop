@@ -43,9 +43,10 @@ dependencies {
     compile 'uk.gov.nationalarchives:droid:6.4'
     compile('uk.gov.nationalarchives:droid-command-line:6.4'){
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-	exclude group: 'bouncycastle'
+        exclude group: 'bouncycastle'
     }
     compile 'org.slf4j:slf4j-log4j12:1.7.25'
+    compile 'khttp:khttp:0.1.0'
 }
 
 jar {

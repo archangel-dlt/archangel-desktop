@@ -72,7 +72,10 @@ class DroidWrapper {
                 val json = Json.createObjectBuilder()
                 columnNames.mapIndexed { index, key ->
                     if (desiredColumns.containsKey(key) && line[index].isNotBlank()) {
-                        json.add(desiredColumns[key], line[index])
+                        var value = line[index]
+                        if (key == "URI" && value.startsWith("file:"))
+                            value = value.substring(5)
+                        json.add(desiredColumns[key], value)
                     }
                 }
                 json.add("uuid", UUID.randomUUID().toString())
