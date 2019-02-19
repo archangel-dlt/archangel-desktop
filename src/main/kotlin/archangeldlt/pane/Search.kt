@@ -110,23 +110,31 @@ class SearchResult(private val record : Record,
                    private val onCreateAip: (sip: Record)->Unit)
     : View() {
     override val root = form {
+        hbox {
+            textflow {
+                text(if (record.isSip) "SIP" else "AIP") {
+                    style = "-fx-font-weight: bold"
+                }
+                text(" - ${record.key}"){
+                    style = "-fx-font-weight: normal"
+                }
+            }
+            region {
+                hgrow = Priority.SOMETIMES
+            }
+            if (record.isSip && record.owned) {
+                button("Create AIP") {
+                    action { onCreateAip(record) }
+                    prefWidth = 150.0
+                }
+            }
+        }
         if (record.isAip) {
             fieldset {
                 field("Catalogue Reference") {
                     textfield(record.citation) {
                         setEditable(false)
                     }
-                }
-            }
-        }
-        if (record.isSip && record.owned) {
-            hbox {
-                region {
-                    hgrow = Priority.SOMETIMES
-                }
-                button("Create AIP") {
-                    action { onCreateAip(record) }
-                    prefWidth = 150.0
                 }
             }
         }
