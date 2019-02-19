@@ -11,7 +11,8 @@ class Record (val block: BigInteger,
               val key: String,
               val timestamp: String,
               data: JsonObject,
-              fileList: JsonArray
+              fileList: JsonArray,
+              val owned: Boolean
 ) {
     val info = Package.fromEvent(key, data, fileList)
 

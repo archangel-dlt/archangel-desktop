@@ -12,9 +12,7 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.ReadonlyTransactionManager
 import org.web3j.tx.TransactionManager
-import org.web3j.tx.gas.DefaultGasProvider
 import java.math.BigInteger
-import kotlinx.coroutines.*
 import org.web3j.tx.gas.StaticGasProvider
 import javax.json.Json
 import javax.json.JsonValue
@@ -53,6 +51,7 @@ class Ethereum() {
     private var registrationEventSubscription: Disposable? = null
     private var updateEventsSubscription: Disposable? = null
     private lateinit var web3j: Web3j
+    private lateinit var userAddress: String
     private lateinit var archangelContractAddress: String
     private lateinit var networkId: String
     private val writePermission = SimpleBooleanProperty(false)
@@ -123,6 +122,7 @@ class Ethereum() {
         callback: (String) -> Unit
     ) {
         web3j = Web3j.build(HttpService(endpoint))
+        this.userAddress = userAddress
 
         networkId = web3j.netVersion().send().result
         val networkName = findNetworkName(networkId)
@@ -166,7 +166,8 @@ class Ethereum() {
         if (files == null)
             files = JsonValue.EMPTY_JSON_ARRAY
 
-        events.add(Record(block, addr, tag, key, timestamp, data, files))
+        val owned = (addr.toLowerCase() == userAddress.toLowerCase())
+        events.add(Record(block, addr, tag, key, timestamp, data, files, owned))
         events.sortByDescending { it.block }
     }
 

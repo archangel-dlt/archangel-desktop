@@ -119,7 +119,7 @@ class SearchResult(private val record : Record,
                 }
             }
         }
-        if (record.isSip) {
+        if (record.isSip && record.owned) {
             hbox {
                 region {
                     hgrow = Priority.SOMETIMES
