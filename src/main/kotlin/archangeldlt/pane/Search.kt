@@ -170,7 +170,7 @@ class SearchResult(private val record : Record,
                 readonlyColumn("Name", PackageFile::name)
             }
             readonlyColumn("Type", PackageFile::type)
-            readonlyColumn("Puid", PackageFile::puid)
+            readonlyColumn("PUID", PackageFile::puid)
             readonlyColumn("Size", PackageFile::size)
             readonlyColumn("Last Modified", PackageFile::lastModified)
             readonlyColumn("Checksum", PackageFile::hash)

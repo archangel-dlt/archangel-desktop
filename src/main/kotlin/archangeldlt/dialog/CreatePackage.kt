@@ -97,7 +97,7 @@ open class CreatePackage(protected val xip: Package,
             readonlyColumn("Path", PackageFile::path)
             readonlyColumn("File name", PackageFile::name)
             readonlyColumn("Type", PackageFile::type)
-            readonlyColumn("Puid", PackageFile::puid)
+            readonlyColumn("PUID", PackageFile::puid)
             readonlyColumn("Size", PackageFile::size)
             readonlyColumn("Last Modified", PackageFile::lastModified)
             readonlyColumn("Checksum", PackageFile::hash)
@@ -160,7 +160,7 @@ open class CreatePackage(protected val xip: Package,
             return
 
         val m = if (chosen.size == 1) { "one file" } else { "${chosen.size} files" }
-        controller.toast("Droid", "Characterising ${m} ...")
+        controller.toast("DROID", "Characterising ${m} ...")
 
         droidFiles(chosen)
     }
@@ -173,7 +173,7 @@ open class CreatePackage(protected val xip: Package,
         if (chosen == null)
             return
 
-        controller.toast("Droid", "Characterising directory ...")
+        controller.toast("DROID", "Characterising directory ...")
 
         droidFiles(chosen)
     }
