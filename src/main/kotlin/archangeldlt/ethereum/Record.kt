@@ -29,4 +29,12 @@ class Record (val block: BigInteger,
 
     val hasFilenames = info.hasFilenames()
     val hasUuid = info.hasUuid()
+
+    val asString = toString()
+
+    override fun toString(): String {
+        val type = if (isSip) "SIP" else "AIP"
+        val label = if (title.isNotEmpty()) title else if (citation.isNotEmpty()) citation else supplier
+        return "${type} - ${key}: ${label}"
+    }
 }
