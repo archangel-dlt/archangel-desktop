@@ -102,7 +102,11 @@ class Package {
     }
 
     fun toCharacterise() : List<PackageFile> {
-        return files.filter { it -> it.puid == "fmt/199" || it.puid == "x-fmt/384" }
+        return files.filter {
+            it.puid == "fmt/199" ||
+            it.puid == "x-fmt/384" ||
+            it.puid == "fmt/569"
+        }
     }
 
     companion object {
