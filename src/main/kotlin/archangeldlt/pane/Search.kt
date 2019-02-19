@@ -112,7 +112,7 @@ class SearchResult(private val record : Record,
     override val root = form {
         if (record.isAip) {
             fieldset {
-                field("Citation Reference") {
+                field("Catalogue Reference") {
                     textfield(record.citation) {
                         setEditable(false)
                     }

@@ -55,7 +55,7 @@ open class CreatePackage(protected val xip: Package,
         }
         if (xip.isAip) {
             fieldset {
-                field("Citation Reference") {
+                field("Catalogue Reference") {
                     textfield(xip.citationProperty) {
                         disableProperty().bind(readyToUpload)
                     }
