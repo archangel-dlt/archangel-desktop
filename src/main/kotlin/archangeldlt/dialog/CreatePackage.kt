@@ -20,7 +20,7 @@ open class CreatePackage(protected val xip: Package,
                     private val canAddFiles: Boolean = true)
     : View("New ${label}") {
     private lateinit var advanceButton: Button
-    private lateinit var fileTable: TableView<PackageFile>
+    protected lateinit var fileTable: TableView<PackageFile>
 
     protected open fun detailsFilled() : BooleanBinding = SimpleBooleanProperty(true).toBinding()
     private val readyToUpload = SimpleBooleanProperty(false)
@@ -118,7 +118,7 @@ open class CreatePackage(protected val xip: Package,
                     prefWidth = 150.0
                     action { addFiles() }
                 }
-                button("Add Directory") {
+                button("Add Folder") {
                     visibleProperty().bind(readyToUpload.not())
                     prefWidth = 150.0
                     action { addDirectory() }
@@ -167,13 +167,13 @@ open class CreatePackage(protected val xip: Package,
 
     private fun addDirectory() {
         val dirChooser = DirectoryChooser()
-        dirChooser.title = "Add Directory Contents To ${label}"
+        dirChooser.title = "Add Folder Contents To ${label}"
 
         val chosen = dirChooser.showDialog(controller.primaryStage)
         if (chosen == null)
             return
 
-        controller.toast("DROID", "Characterising directory ...")
+        controller.toast("DROID", "Characterising folder ...")
 
         droidFiles(chosen)
     }
@@ -182,7 +182,7 @@ open class CreatePackage(protected val xip: Package,
         droidFiles(listOf(directory))
     }
 
-    private fun droidFiles(files: List<File>) {
+    protected fun droidFiles(files: List<File>) {
         runAsync {
             val fileJson = controller.characterizeFiles(files)
             fileJson.forEach {

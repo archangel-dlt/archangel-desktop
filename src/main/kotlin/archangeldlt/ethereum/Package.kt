@@ -3,6 +3,7 @@ package archangeldlt.ethereum
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import tornadofx.*
+import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -137,11 +138,16 @@ class PackageFile {
     val path : String
     val name : String
     val type : String
-    val puid : String
+    var puid : String
     val hash : String
     val size : Int
     val lastModified : String
     val uuid : String
+
+    fun fullPath() : String {
+        val p = if (!path.endsWith(File.separator)) path else path.substringBeforeLast(File.separator)
+        return "${p}${File.separator}${name}"
+    }
 
     fun toJson(includeFilenames: Boolean) : JsonObject {
         val fileJson = JsonBuilder()
