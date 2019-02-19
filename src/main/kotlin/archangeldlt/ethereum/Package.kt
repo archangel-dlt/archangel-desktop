@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import tornadofx.*
 import java.io.File
+import java.net.URLDecoder
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -125,14 +126,20 @@ class Package {
 
 class PackageFile {
     constructor(f : JsonObject) {
-        path = f.getString("path", "")
-        name = f.getString("name", "")
         type = f.getString("type", "")
         puid = f.getString("puid", "")
         hash = f.getString("sha256_hash", "")
         size = fileSize(f.get("size"))
         lastModified = f.getString("last_modified", "")
         uuid = f.getString("uuid", "")
+
+        val p = URLDecoder.decode(f.getString("path", ""), "UTF-8")
+        name = URLDecoder.decode(f.getString("name", ""), "UTF-8")
+        val n = if (type == "Folder") "${name}${File.separator}" else name
+        path = if (p.endsWith(n))
+            p.substringBeforeLast(n)
+        else
+            p
     }
 
     val path : String
