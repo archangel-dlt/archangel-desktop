@@ -13,6 +13,7 @@ import javax.json.*
 
 class Package {
     val titleProperty = SimpleStringProperty()
+    val refProperty = SimpleStringProperty()
     val citationProperty = SimpleStringProperty()
     val supplierProperty = SimpleStringProperty()
     val creatorProperty = SimpleStringProperty()
@@ -21,6 +22,7 @@ class Package {
 
     var key : String = ""
     val title by titleProperty
+    val ref by refProperty
     val citation by citationProperty
     val supplier by supplierProperty
     val creator by creatorProperty
@@ -40,6 +42,7 @@ class Package {
     private constructor(sip: Package) {
         key = sip.key
         titleProperty.value = sip.titleProperty.value
+        refProperty.value = sip.refProperty.value
         citationProperty.value = sip.citationProperty.value
         supplierProperty.value = sip.supplierProperty.value
         creatorProperty.value = sip.creatorProperty.value
@@ -54,6 +57,7 @@ class Package {
     private constructor(eventKey: String, data : JsonObject, fileList : JsonArray) {
         key = eventKey
         titleProperty.value = data.getString("collection", "")
+        refProperty.value = data.getString("ref", "")
         citationProperty.value = data.getString("citation", "")
         supplierProperty.value = data.getString("supplier", "")
         creatorProperty.value = data.getString("creator", "")
@@ -85,6 +89,7 @@ class Package {
             add("key", key)
             add("pack", if (isAip) { "aip" } else { "sip" })
             add("collection", title)
+            add("ref", ref)
             add("citation", citation)
             add("supplier", supplier)
             add("creator", creator)

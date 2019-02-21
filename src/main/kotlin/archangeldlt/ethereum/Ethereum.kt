@@ -86,7 +86,9 @@ class Ethereum() {
 
         val results = events
             .filter {
+                exactMatch(it.key, searchTerm) ||
                 matches(it.title, searchTerm) ||
+                matches(it.ref, searchTerm) ||
                 matches(it.creator, searchTerm) ||
                 matches(it.supplier, searchTerm) ||
                 matches(it.held, searchTerm) ||
@@ -194,6 +196,10 @@ class Ethereum() {
     }
 
     companion object {
+        fun exactMatch(field : String?, searchTerm : String) : Boolean {
+            return (field != null) &&
+                    (field.toLowerCase() == searchTerm)
+        }
         fun matches(field : String?, searchTerm : String) : Boolean {
             return (field != null) &&
                     (field.toLowerCase().indexOf(searchTerm) != -1)

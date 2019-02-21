@@ -138,10 +138,17 @@ class SearchResult(private val record : Record,
                 }
             }
         }
-        if (record.title.isNotEmpty()) {
-            fieldset {
+        fieldset {
+            if (record.title.isNotEmpty()) {
                 field("Title/Collection") {
                     textfield(record.title) {
+                        setEditable(false)
+                    }
+                }
+            }
+            if (record.ref.isNotEmpty()) {
+                field("Local Reference") {
+                    textfield(record.ref) {
                         setEditable(false)
                     }
                 }

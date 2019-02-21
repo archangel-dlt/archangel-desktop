@@ -68,6 +68,11 @@ open class CreatePackage(protected val xip: Package,
                     disableProperty().bind(readyToUpload)
                 }
             }
+            field("Local Reference") {
+                textfield(xip.refProperty) {
+                    disableProperty().bind(readyToUpload)
+                }
+            }
         }
 
         fieldset {

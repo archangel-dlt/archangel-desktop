@@ -17,6 +17,7 @@ class Record (val block: BigInteger,
     val info = Package.fromEvent(key, data, fileList)
 
     val title = info.title
+    val ref = info.ref
     val citation = info.citation
     val supplier = info.supplier
     val creator = info.creator
