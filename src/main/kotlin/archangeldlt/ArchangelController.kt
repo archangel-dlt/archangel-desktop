@@ -76,7 +76,7 @@ class ArchangelController : Controller() {
             VideoUpload(
                 xipKey,
                 files[index].uuid,
-                files[index].path
+                files[index].fullPath()
             )
         }.success {
             toast("Video", "Uploaded ${files[index].name}")

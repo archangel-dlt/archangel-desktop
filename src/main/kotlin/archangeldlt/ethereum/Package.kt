@@ -1,5 +1,6 @@
 package archangeldlt.ethereum
 
+import archangeldlt.video.formats
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import tornadofx.*
@@ -110,9 +111,7 @@ class Package {
 
     fun toCharacterise() : List<PackageFile> {
         return files.filter {
-            it.puid == "fmt/199" ||
-            it.puid == "x-fmt/384" ||
-            it.puid == "fmt/569"
+            formats.indexOf(it.puid) != -1
         }
     }
 
