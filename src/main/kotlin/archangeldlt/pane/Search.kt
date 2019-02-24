@@ -122,12 +122,14 @@ class SearchResult(private val record : Record,
             region {
                 hgrow = Priority.SOMETIMES
             }
+/*
             if (record.isSip && record.owned) {
                 button("Create AIP") {
                     action { onCreateAip(record) }
                     prefWidth = 150.0
                 }
             }
+*/
         }
         if (record.isAip) {
             fieldset {
