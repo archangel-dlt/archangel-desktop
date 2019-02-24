@@ -62,6 +62,14 @@ open class CreatePackage(protected val xip: Package,
                 }
             }
         }
+        textflow {
+            text(if (xip.isSip) "SIP" else "AIP") {
+                style = "-fx-font-weight: bold"
+            }
+            text(" - ${xip.key}"){
+                style = "-fx-font-weight: normal"
+            }
+        }
         fieldset {
             field("Title/Collection") {
                 textfield(xip.titleProperty) {
