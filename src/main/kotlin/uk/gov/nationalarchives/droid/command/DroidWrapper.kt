@@ -6,6 +6,8 @@ import org.apache.commons.lang.RandomStringUtils
 import uk.gov.nationalarchives.droid.core.interfaces.config.DroidGlobalProperty
 import uk.gov.nationalarchives.droid.core.interfaces.config.RuntimeConfig
 import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 import javax.json.Json
 import javax.json.JsonObject
@@ -35,9 +37,8 @@ class DroidWrapper {
         }
 
         fun characterizeFile(paths : List<String>) : List<JsonObject> {
-            val passName = uniqueName()
-            val profileName = "${passName}.droid"
-            val exportName = "${passName}.csv"
+            val profileName = uniqueName(".droid")
+            val exportName = uniqueName(".csv")
 
             val characteriseArgs = mutableListOf("--open-archives", "--recurse", "--profile(s)", "\"${profileName}\"")
             paths.forEach {
@@ -90,16 +91,9 @@ class DroidWrapper {
             cmdLine.processExecution()
         }
 
-        private fun uniqueName() : String {
-            val millis = System.currentTimeMillis()
-            val df = SimpleDateFormat("ddMMMyyyyHHmmss")
-            val datetime = df.format(Date())
-            val rndchars = RandomStringUtils.randomAlphanumeric(16)
-            val filename = "${rndchars }_${datetime}_${millis}"
-
-            val tmpDir = System.getProperty("java.io.tmpdir")
-
-            return "${tmpDir}${File.separator}${filename}"
+        private fun uniqueName(suffix: String) : String {
+            val t = File.createTempFile("droid", suffix)
+            return t.absolutePath
         }
     }
 }
