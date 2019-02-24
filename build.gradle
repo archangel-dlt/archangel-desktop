@@ -3,7 +3,6 @@ buildscript {
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.3'
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.3.0'
     id 'application'
@@ -13,6 +12,8 @@ group 'archangeldlt'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+def embeddedJRE = false
 
 repositories {
     mavenCentral()
@@ -53,16 +54,11 @@ jar {
     manifest {
         attributes(
                 'Main-Class': 'archangeldlt.ArchangelDLTKt',
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+                'Class-Path': configurations.runtime.collect { it.getName() }.join(' ')
         )
     }
 
     mainClassName = 'archangeldlt.ArchangelDLTKt'
-}
-
-shadowJar {
-    baseName = project.name + '-all'
-    classifier = null
 }
 
 compileKotlin {
@@ -72,4 +68,41 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-defaultTasks 'shadowJar'
+task copyDependencies(type: Copy) {
+    destinationDir libsDir
+    from configurations.runtime
+}
+
+task javapackager(type: Exec, dependsOn: [assemble, copyDependencies]) {
+    def nativeType
+    if (platform == 'win')
+        nativeType = 'msi'
+    if (platform == 'mac')
+        nativeType = 'dmg'
+    if (platform == 'linux')
+        nativeType = 'deb'
+
+    def dependencies = []
+    configurations.runtime.forEach({ file ->
+        dependencies.add('-srcfiles')
+        dependencies.add(file.getName())
+    })
+
+    def paramEmbeddedJRE = embeddedJRE ? [] : ['-Bruntime=']
+
+    workingDir project.projectDir
+    commandLine = [
+            'javapackager',
+            '-deploy',
+            '-nosign',
+            '-native', nativeType,
+            '-outdir', "${buildDir}/distribution",
+            '-outfile', project.name,
+            '-name', 'Archangel Desktop',
+            '-appclass', mainClassName,
+            '-srcdir', libsDir,
+            '-srcfiles', jar.archiveName
+    ] + dependencies + paramEmbeddedJRE
+}
+
+defaultTasks 'installDist'
