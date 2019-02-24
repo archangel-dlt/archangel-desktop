@@ -13,7 +13,7 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
-def embeddedJRE = false
+def embeddedJRE = true
 
 repositories {
     mavenCentral()
@@ -78,7 +78,7 @@ task javapackager(type: Exec, dependsOn: [assemble, copyDependencies]) {
     if (platform == 'win')
         nativeType = 'msi'
     if (platform == 'mac')
-        nativeType = 'dmg'
+        nativeType = 'pkg'
     if (platform == 'linux')
         nativeType = 'deb'
 
@@ -98,7 +98,7 @@ task javapackager(type: Exec, dependsOn: [assemble, copyDependencies]) {
             '-native', nativeType,
             '-outdir', "${buildDir}/distribution",
             '-outfile', project.name,
-            '-name', 'Archangel Desktop',
+            '-name', 'ArchangelDesktop',
             '-appclass', mainClassName,
             '-srcdir', libsDir,
             '-srcfiles', jar.archiveName
