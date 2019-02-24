@@ -97,7 +97,9 @@ class DroidWrapper {
             val rndchars = RandomStringUtils.randomAlphanumeric(16)
             val filename = "${rndchars }_${datetime}_${millis}"
 
-            return filename
+            val tmpDir = System.getProperty("java.io.tmpdir")
+
+            return "${tmpDir}${File.separator}${filename}"
         }
     }
 }
