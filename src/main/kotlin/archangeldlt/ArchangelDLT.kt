@@ -7,8 +7,15 @@ import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import javafx.scene.layout.Priority
 import tornadofx.*
+import java.nio.file.Path
+import java.nio.file.Paths
 
-class GUI : App(TabBox::class)
+class GUI : App(TabBox::class) {
+    override val configBasePath: Path get() = Paths.get(
+        System.getProperty("user.home"),
+        ".archangel-desktop"
+    )
+}
 
 fun main(args: Array<String>) {
     launch<GUI>(*args)
