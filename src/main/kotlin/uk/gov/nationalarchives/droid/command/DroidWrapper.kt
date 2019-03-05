@@ -31,8 +31,11 @@ class DroidWrapper {
             val globalConfig = globalContext.globalConfig
             val props = globalConfig.properties
 
-            props.setProperty(DroidGlobalProperty.GENERATE_HASH.name, true)
-            props.setProperty(DroidGlobalProperty.HASH_ALGORITHM.name, "sha256")
+            // must use getName here otherwise generated accessor name is overridden by Enum.name
+            //props.setProperty(DroidGlobalProperty.DEFAULT_BINARY_SIG_FILE_VERSION.getName(), "DROID_SignatureFile_V94")
+            //props.setProperty(DroidGlobalProperty.DEFAULT_CONTAINER_SIG_FILE_VERSION.getName(), "container-signature-20180920")
+            props.setProperty(DroidGlobalProperty.GENERATE_HASH.getName(), true)
+            props.setProperty(DroidGlobalProperty.HASH_ALGORITHM.getName(), "sha256")
             props.save()
         }
 
