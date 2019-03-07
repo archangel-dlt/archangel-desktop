@@ -1,6 +1,42 @@
-= Archangel Desktop Installation Guid
+= Archangel Desktop Installation Guide
 Jez Higgins <jez@theodi.org>
 2018-03-06
 ifndef::imagesdir[:imagesdir: images]
 
-Hello chums
+== Pre-requisites
+
+The Archangel Project will provide
+
+* Archangel Desktop installer
+
+and separately
+
+* Ethereum Wallet File
+* Wallet password
+
+== Installation
+
+image::01-opening-installer.png[]
+
+image::02-install-in-progress.png[]
+
+== Starting the application
+
+image::03-starting-search.png[]
+
+image::04-search-for-archangel.png[]
+
+image::05-application-started.png[]
+
+== Configuration
+
+image::06-settings-menu.png[]
+
+image::07-settings-box.png[]
+
+image::08-password-box.png[]
+
+image::09-populated-settings.png[]
+
+image::10-reconnect-to-network.png[]
+

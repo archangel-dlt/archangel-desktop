@@ -126,4 +126,6 @@ asciidoctor {
         'docinfo1': ''
 }
 
+task docs(dependsOn: asciidoctor) { }
+
 defaultTasks 'installDist'
