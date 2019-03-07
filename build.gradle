@@ -117,8 +117,6 @@ asciidoctor {
     backends 'pdf'
     attributes \
         'build-gradle': file('build.gradle'),
-        'source-highlighter': 'coderay',
-        'toc': 'left',
         'icons': 'font',
         'setanchors': '',
         'idprefix': '',
