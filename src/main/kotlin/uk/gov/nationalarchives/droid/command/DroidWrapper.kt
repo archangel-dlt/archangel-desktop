@@ -3,6 +3,7 @@ package uk.gov.nationalarchives.droid.command
 import au.com.bytecode.opencsv.CSVReader
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.RandomStringUtils
+import uk.gov.nationalarchives.droid.core.interfaces.config.DroidGlobalConfig
 import uk.gov.nationalarchives.droid.core.interfaces.config.DroidGlobalProperty
 import uk.gov.nationalarchives.droid.core.interfaces.config.RuntimeConfig
 import java.io.File
@@ -13,7 +14,8 @@ import javax.json.Json
 import javax.json.JsonObject
 import java.text.SimpleDateFormat
 
-
+val containerSigs = "container-signature-20180920"
+val binarySigs = "DROID_SignatureFile_V94"
 
 class DroidWrapper {
     companion object {
@@ -29,15 +31,31 @@ class DroidWrapper {
             val cmdLine = DroidCommandLine(arrayOf())
             val globalContext = cmdLine.context
             val globalConfig = globalContext.globalConfig
-            val props = globalConfig.properties
 
+            updateSignatures(globalConfig)
+
+            val props = globalConfig.properties
             // must use getName here otherwise generated accessor name is overridden by Enum.name
-            //props.setProperty(DroidGlobalProperty.DEFAULT_BINARY_SIG_FILE_VERSION.getName(), "DROID_SignatureFile_V94")
-            //props.setProperty(DroidGlobalProperty.DEFAULT_CONTAINER_SIG_FILE_VERSION.getName(), "container-signature-20180920")
+            props.setProperty(DroidGlobalProperty.DEFAULT_BINARY_SIG_FILE_VERSION.getName(), binarySigs)
+            props.setProperty(DroidGlobalProperty.DEFAULT_CONTAINER_SIG_FILE_VERSION.getName(), containerSigs)
             props.setProperty(DroidGlobalProperty.GENERATE_HASH.getName(), true)
             props.setProperty(DroidGlobalProperty.HASH_ALGORITHM.getName(), "sha256")
             props.save()
         }
+
+        private fun updateSignatures(globalConfig: DroidGlobalConfig) {
+            splatResource("${containerSigs}.xml", globalConfig.containerSignatureDir)
+            splatResource("${binarySigs}.xml", globalConfig.signatureFileDir)
+        } // updateSignatures
+
+        private fun splatResource(fileName: String, destDir: File) {
+            val sigs = DroidWrapper::class.java.getResourceAsStream("/${fileName}")
+            val destination = File(destDir, fileName)
+
+            sigs.use { input ->
+                destination.outputStream().use { input.copyTo(it) }
+            }
+        } // splatResource
 
         fun characterizeFile(paths : List<String>) : List<JsonObject> {
             val profileName = uniqueName(".droid")
