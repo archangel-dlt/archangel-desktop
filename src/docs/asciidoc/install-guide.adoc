@@ -1,0 +1,6 @@
+= Archangel Desktop Installation Guid
+Jez Higgins <jez@theodi.org>
+2018-03-06
+ifndef::imagesdir[:imagesdir: images]
+
+Hello chums

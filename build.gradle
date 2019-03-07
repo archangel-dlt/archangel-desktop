@@ -1,11 +1,15 @@
 buildscript {
     ext.kotlin_version = '1.3.11'
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
+    }
 }
 
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.3.0'
     id 'application'
+    id 'org.asciidoctor.convert' version '1.5.3'
 }
 
 group 'archangeldlt'
@@ -97,12 +101,29 @@ task javapackager(type: Exec, dependsOn: [assemble, copyDependencies]) {
             '-nosign',
             '-native', nativeType,
             '-outdir', "${buildDir}/distribution",
-            '-outfile', project.name,
+            '-outfile', "${project.name}-${project.version}",
             '-name', 'ArchangelDesktop',
             '-appclass', mainClassName,
             '-srcdir', libsDir,
             '-srcfiles', jar.archiveName
     ] + dependencies + paramEmbeddedJRE
+}
+
+asciidoctorj {
+    version = '1.5.5'
+}
+
+asciidoctor {
+    backends 'pdf'
+    attributes \
+        'build-gradle': file('build.gradle'),
+        'source-highlighter': 'coderay',
+        'toc': 'left',
+        'icons': 'font',
+        'setanchors': '',
+        'idprefix': '',
+        'idseparator': '-',
+        'docinfo1': ''
 }
 
 defaultTasks 'installDist'
