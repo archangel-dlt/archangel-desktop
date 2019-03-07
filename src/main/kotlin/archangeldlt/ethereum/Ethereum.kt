@@ -169,7 +169,13 @@ class Ethereum() {
             files = JsonValue.EMPTY_JSON_ARRAY
 
         val owned = (addr.toLowerCase() == userAddress.toLowerCase())
-        events.add(Record(block, addr, tag, key, timestamp, data, files, owned))
+
+        val newRecord = Record(block, addr, tag, key, timestamp, data, files, owned)
+
+        if (events.find { (it.block == newRecord.block) && (it.key == newRecord.key) } != null) {
+            return // duplicate notification
+        }
+        events.add(newRecord)
         events.sortByDescending { it.block }
     }
 
