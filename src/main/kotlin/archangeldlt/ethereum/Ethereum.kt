@@ -80,8 +80,6 @@ class Ethereum() {
     }
 
     fun search(phrase: String) : List<Record> {
-        println("Searching for ${phrase}")
-
         val searchTerm = phrase.toLowerCase()
 
         val results = events
