@@ -1,6 +1,6 @@
 = Archangel Desktop Installation Guide
-Jez Higgins <jez@theodi.org>
-2018-03-06
+Jez Higgins, jez@theodi.org
+6 March 2018
 ifndef::imagesdir[:imagesdir: images]
 
 == Pre-requisites
