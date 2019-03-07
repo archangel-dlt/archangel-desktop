@@ -150,7 +150,7 @@ class PackageFile {
     val name : String
     val type : String
     var puid : String
-    val hash : String
+    var hash : String
     val size : Int
     val lastModified : String
     val uuid : String

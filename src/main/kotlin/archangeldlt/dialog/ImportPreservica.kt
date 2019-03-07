@@ -35,6 +35,8 @@ class ImportPreservica(
                     val path = URLDecoder.decode(it.getString("path"), "UTF-8")
                     val original = findPackageFile(path)
                     original?.puid = it.getString("puid", "")
+                    if (original?.hash == "")
+                        original.hash = it.getString("sha256_hash", "")
                 }
                 fileTable.refresh()
             }
