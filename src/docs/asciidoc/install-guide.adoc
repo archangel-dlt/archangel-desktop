@@ -14,29 +14,63 @@ and separately
 * Ethereum Wallet File
 * Wallet password
 
+<<<
 == Installation
 
-image::01-opening-installer.png[]
+* Copy the installer package, _ArchangelDesktop-1.2.msi_, to your computer.
+* Double-click the package to start the installation.
+* You may see a warning message, but please click *Yes*.
 
-image::02-install-in-progress.png[]
+image::01-opening-installer.png[align="center"]
 
+* The installation will then proceed. A progress box will appear on screen, but should vanish after a few seconds when the installation has finished.
+
+image::02-install-in-progress.png[align="center"]
+
+<<<
 == Starting the application
 
-image::03-starting-search.png[]
+With the application installed, we can start the application for the first time.
 
-image::04-search-for-archangel.png[]
+* Click in the search box at the bottom left of you screen.
 
-image::05-application-started.png[]
+image::03-starting-search.png[align="center"]
 
+* Start typing *archangel*. The _ArchangelDesktop_ app should quickly appear at the top of the search results.
+
+image::04-search-for-archangel.png[align="center"]
+
+* Click on _ArchangelDesktop_ to launch the application.  It will take a moment to start, but be patient, and the application will appear after a few seconds.
+
+image::05-application-started.png[align="center"]
+
+<<<
 == Configuration
 
-image::06-settings-menu.png[]
+Now the application is installed, it needs to be configured so you can save information to the Archangel blockchain. This will only need to be done once.
 
-image::07-settings-box.png[]
+* Copy the provided wallet file to your computer.
+* In the top right-hand corner is the *Settings* menu.  Click to open it
 
-image::08-password-box.png[]
+image::06-settings-menu.png[align="center"]
 
-image::09-populated-settings.png[]
+* Click *Ethereum* to open the settings box.
 
-image::10-reconnect-to-network.png[]
+image::07-settings-box.png[align="center"]
+
+* Click the *Browse* button, find the wallet file, and then click the *Open* button to load it.
+* You will be prompted for the wallet password.
+* Enter the password provided to you by the Archangel project.
+
+image::08-password-box.png[align="center"]
+
+* After a second or two, the settings box will fill in with your wallet details. Click *Save*.
+
+image::09-populated-settings.png[align="center"]
+
+* The application will reconnect to the Archangel Ethereum network. The *SIP* menu will appear at the top left of the application.
+
+image::10-reconnect-to-network.png[align="center"]
+
+* Configuration is complete, and the application is ready to go. You should not need to complete this process again.
 
