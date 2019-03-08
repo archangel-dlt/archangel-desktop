@@ -41,7 +41,7 @@ open class CreatePackage(protected val xip: Package,
             button("«« Back") {
                 visibleProperty().bind(readyToUpload)
                 action { previous() }
-                prefWidth = 150.0
+                prefWidth = 200.0
             }
             region {
                 hgrow = Priority.SOMETIMES
@@ -49,7 +49,7 @@ open class CreatePackage(protected val xip: Package,
             button("Create ${label} »»") {
                 disableProperty().bind(detailsFilled().not())
                 action { advance() }
-                prefWidth = 150.0
+                prefWidth = 200.0
                 advanceButton = this
             }
         }
@@ -155,7 +155,7 @@ open class CreatePackage(protected val xip: Package,
     private fun advance() {
         if (readyToUpload.value == false) {
             readyToUpload.value = true
-            advanceButton.text = "Upload ${label}"
+            advanceButton.text = "Upload ${label} metadata"
 
             fileTable.columns[0].visibleProperty().value = includeFiles.value
             fileTable.columns[1].visibleProperty().value = includeFiles.value

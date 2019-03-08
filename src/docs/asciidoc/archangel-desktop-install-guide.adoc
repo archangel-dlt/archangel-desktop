@@ -17,7 +17,7 @@ and separately
 <<<
 == Installation
 
-* Copy the installer package, _ArchangelDesktop-1.2.msi_, to your computer.
+* Copy the installer package, _ArchangelDesktop-1.3.msi_, to your computer.
 * Double-click the package to start the installation.
 * You may see a warning message, but please click *Yes*.
 
