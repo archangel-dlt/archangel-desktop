@@ -65,7 +65,7 @@ class Ethereum() {
     fun start(
         endpoint: String,
         userAddress: String,
-        callback: (String) -> Unit
+        callback: (String, String) -> Unit
     ) {
         startWeb3(endpoint, userAddress, callback)
     }
@@ -73,7 +73,7 @@ class Ethereum() {
     fun restart(
         endpoint: String,
         userAddress: String,
-        callback: (String) -> Unit
+        callback: (String, String) -> Unit
     ) {
         shutdown()
         startWeb3(endpoint, userAddress, callback)
@@ -99,6 +99,7 @@ class Ethereum() {
     }
 
     fun shutdown() {
+        writePermission.value = false
         events.clear()
         web3j.shutdown()
     }
@@ -119,17 +120,21 @@ class Ethereum() {
     private fun startWeb3(
         endpoint: String,
         userAddress: String,
-        callback: (String) -> Unit
+        callback: (String, String) -> Unit
     ) {
-        web3j = Web3j.build(HttpService(endpoint))
-        this.userAddress = userAddress
+        try {
+            web3j = Web3j.build(HttpService(endpoint))
+            this.userAddress = userAddress
 
-        networkId = web3j.netVersion().send().result
-        val networkName = findNetworkName(networkId)
-        archangelContractAddress = Archangel.getPreviouslyDeployedAddress(networkId)
+            networkId = web3j.netVersion().send().result
+            val networkName = findNetworkName(networkId)
+            archangelContractAddress = Archangel.getPreviouslyDeployedAddress(networkId)
 
-        callback("Connected to ${networkName} network")
-
+            callback("Connected", "Found ${networkName} network")
+        } catch (e: Exception) {
+            callback("ERROR", "Could not connect to Ethereum network")
+            return
+        }
         val archangel = loadContract(ReadonlyTransactionManager(web3j, userAddress))
 
         val fromBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(1))

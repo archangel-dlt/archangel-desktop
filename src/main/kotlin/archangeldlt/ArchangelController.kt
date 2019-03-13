@@ -27,7 +27,7 @@ class ArchangelController : Controller() {
     val conf = ArchangelConfig(app.config)
     val notifier = NotificationPane()
 
-    private val ethMsg = { msg: String -> this.toast("Ethereum", msg) }
+    private val ethMsg = { title: String, msg: String -> this.toast(title, msg) }
 
     init {
         ethereum.start(conf.endpoint, conf.userAddress, ethMsg)
@@ -127,7 +127,7 @@ class ArchangelController : Controller() {
     }
 
     fun toast(title: String, msg: String) {
-        notifier.notify(Notification(title, msg))
+        notifier.notify(Notification(title, msg), 10000)
     }
 }
 
