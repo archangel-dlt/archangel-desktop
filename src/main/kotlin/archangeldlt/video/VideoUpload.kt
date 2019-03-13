@@ -8,7 +8,7 @@ fun VideoUpload(xipKey: String, fileUuid: String, filePath: String) {
     val url = "http://blockchain.surrey.ac.uk/videos/upload/${xipKey}/${fileUuid}"
     val response = KhttpPost(
         url = url,
-        files = listOf(FileLike("video", File(filePath)))
+        files = listOf(FileLike(File(filePath)))
     )
 
     if (response.statusCode != 200)
