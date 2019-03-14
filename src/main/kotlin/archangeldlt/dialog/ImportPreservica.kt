@@ -4,6 +4,7 @@ import archangeldlt.ArchangelController
 import archangeldlt.ethereum.Package
 import archangeldlt.ethereum.PackageFile
 import javafx.stage.FileChooser
+import tornadofx.success
 import java.io.File
 import java.io.FileReader
 import java.io.StringWriter
@@ -21,6 +22,7 @@ class ImportPreservica(
     controller: ArchangelController
 ) : CreatePackage(sip, controller, "SIP", false) {
     init {
+        updateFileCount()
         if (filesToCharacterize.size != 0) {
             val m = if (filesToCharacterize.size == 1) {
                 "one file"

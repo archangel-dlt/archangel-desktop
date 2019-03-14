@@ -123,7 +123,7 @@ open class CreatePackage(protected val xip: Package,
             vgrow = Priority.ALWAYS
             fileTable = this
         }
-        if (xip.isSip && canAddFiles) {
+        if (xip.isSip) {
             hbox {
                 fieldset {
                     field {
@@ -134,15 +134,17 @@ open class CreatePackage(protected val xip: Package,
                 region {
                     hgrow = Priority.SOMETIMES
                 }
-                button("Add Files") {
-                    visibleProperty().bind(readyToUpload.not())
-                    prefWidth = 150.0
-                    action { addFiles() }
-                }
-                button("Add Folder") {
-                    visibleProperty().bind(readyToUpload.not())
-                    prefWidth = 150.0
-                    action { addDirectory() }
+                if (canAddFiles) {
+                    button("Add Files") {
+                        visibleProperty().bind(readyToUpload.not())
+                        prefWidth = 150.0
+                        action { addFiles() }
+                    }
+                    button("Add Folder") {
+                        visibleProperty().bind(readyToUpload.not())
+                        prefWidth = 150.0
+                        action { addDirectory() }
+                    }
                 }
             }
         }
@@ -210,8 +212,12 @@ open class CreatePackage(protected val xip: Package,
                 xip.files.add(PackageFile(it))
             }
         }.success {
-            fileCount.value = "${xip.files.size} file${ if (xip.files.size > 1) "s" else ""}"
+            updateFileCount()
         }
+    }
+
+    protected fun updateFileCount() {
+        fileCount.value = "${xip.files.size} file${ if (xip.files.size > 1) "s" else ""}"
     }
 
     private fun upload() {
