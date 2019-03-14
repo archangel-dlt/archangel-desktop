@@ -199,11 +199,19 @@ class SearchResult(private val record : Record,
 
             setTableHeightByRowCount(this, record.files)
         }
+        hbox {
+            fieldset {
+                field {
+                    style = "-fx-font-weight: normal"
+                    text = "${record.files.size} file${ if (record.files.size > 1) "s" else ""}"
+                }
+            }
+        }
     }
 
     companion object {
         fun setTableHeightByRowCount(table : TableView<PackageFile>, files : ObservableList<PackageFile>) {
-            val rowCount = files.size
+            val rowCount = Math.min(20, files.size)
             val tableHeight = (rowCount * table.fixedCellSize) +
                     table.insets.top + table.insets.bottom +
                     50.0
