@@ -45,6 +45,7 @@ class ArchangelController : Controller() {
 
     fun store(xip: Package, includeFiles: Boolean, label: String) {
         toast(label, "Uploading to Ethereum")
+
         val payload = xip.toJSON(includeFiles)
 
         runAsync {

@@ -151,7 +151,7 @@ class PackageFile {
     val type : String
     var puid : String
     var hash : String
-    val size : Int
+    val size : Long
     val lastModified : String
     val uuid : String
 
@@ -178,15 +178,15 @@ class PackageFile {
     }
 
     companion object {
-        private fun fileSize(o : JsonValue?) : Int {
+        private fun fileSize(o : JsonValue?) : Long {
             if (o == null)
                 return 0
             if (o.valueType == JsonValue.ValueType.STRING) {
                 val s = (o as JsonString).string
-                return if (s != "") s.toInt() else 0
+                return if (s != "") s.toLong() else 0
             }
             if (o.valueType == JsonValue.ValueType.NUMBER)
-                return (o as JsonNumber).intValue()
+                return (o as JsonNumber).longValue()
             return 0
         }
     }
