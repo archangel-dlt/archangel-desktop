@@ -5,6 +5,7 @@ import archangeldlt.ethereum.Package
 import archangeldlt.ethereum.PackageFile
 import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.TableView
@@ -25,6 +26,7 @@ open class CreatePackage(protected val xip: Package,
     protected open fun detailsFilled() : BooleanBinding = SimpleBooleanProperty(true).toBinding()
     private val readyToUpload = SimpleBooleanProperty(false)
     private val includeFiles = SimpleBooleanProperty(true)
+    private val fileCount = SimpleStringProperty("")
 
     private val includeFilesToggle = CheckBox()
 
@@ -123,6 +125,12 @@ open class CreatePackage(protected val xip: Package,
         }
         if (xip.isSip && canAddFiles) {
             hbox {
+                fieldset {
+                    field {
+                        style = "-fx-font-weight: normal"
+                        textProperty().bind(fileCount)
+                    }
+                }
                 region {
                     hgrow = Priority.SOMETIMES
                 }
@@ -201,6 +209,8 @@ open class CreatePackage(protected val xip: Package,
             fileJson.forEach {
                 xip.files.add(PackageFile(it))
             }
+        }.success {
+            fileCount.value = "${xip.files.size} file${ if (xip.files.size > 1) "s" else ""}"
         }
     }
 
