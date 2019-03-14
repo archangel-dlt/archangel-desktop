@@ -165,6 +165,23 @@ class Ethereum() {
         var files = body.getJsonArray("files")
         val timestamp = body.getString("timestamp")
 
+        val slash = key.indexOf('/')
+        val keyString = if(slash == -1) key else key.substring(0, slash)
+
+        if (slash != -1) {
+            // urg
+            val previous = events.findLast ( { it.key == keyString && it.tag == tag })
+            if (previous != null) {
+                val previousFiles = previous.info.files
+
+                val newFiles = files.map { PackageFile(it.asJsonObject()) }
+
+                previousFiles.addAll(newFiles)
+
+                return
+            }
+        }
+
         if (timestamp == null || data == null)
             return
 
@@ -173,7 +190,7 @@ class Ethereum() {
 
         val owned = (addr.toLowerCase() == userAddress.toLowerCase())
 
-        val newRecord = Record(block, addr, tag, key, timestamp, data, files, owned)
+        val newRecord = Record(block, addr, tag, keyString, timestamp, data, files, owned)
 
         if (events.find { (it.block == newRecord.block) && (it.key == newRecord.key) } != null) {
             return // duplicate notification
