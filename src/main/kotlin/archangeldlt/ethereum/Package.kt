@@ -13,6 +13,8 @@ import java.util.*
 import javax.json.*
 
 class Package {
+    val maxFilesPerPage = 50
+
     val titleProperty = SimpleStringProperty()
     val refProperty = SimpleStringProperty()
     val citationProperty = SimpleStringProperty()
@@ -33,6 +35,7 @@ class Package {
     val isAip: Boolean
 
     val files = FXCollections.observableArrayList<PackageFile>()
+    val pageCount : Int get() = (files.size / maxFilesPerPage) + 1
 
     private constructor() {
         key = UUID.randomUUID().toString()
@@ -78,13 +81,16 @@ class Package {
             it.path.isNotEmpty() || it.name.isNotEmpty()
         }
     }
-    fun hasUuid()  : Boolean {
+    fun hasUuid() : Boolean {
         return files.any {
             it.uuid.isNotEmpty()
         }
     }
 
-    fun toJSON(includeFilenames: Boolean) : JsonObject {
+    fun toJSON(
+        includeFilenames: Boolean,
+        page: Int
+    ) : JsonObject {
         val data = JsonBuilder()
         with (data) {
             add("key", key)
@@ -96,9 +102,18 @@ class Package {
             add("creator", creator)
             add("rights", rights)
             add("held", held)
+            if (pageCount > 1) {
+                add("page", page)
+                add("pageCount", pageCount)
+            }
         }
 
-        val fileJson = files.map { it.toJson(includeFilenames || isAip) }
+        val fileFrom = (page-1) * maxFilesPerPage
+        val fileTo = Math.min(files.size, fileFrom + maxFilesPerPage)
+
+        val fileJson = files
+            .subList(fileFrom, fileTo)
+            .map { it.toJson(includeFilenames || isAip) }
 
         val json = JsonBuilder()
         with (json) {

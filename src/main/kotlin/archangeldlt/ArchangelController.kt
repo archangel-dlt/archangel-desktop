@@ -44,9 +44,38 @@ class ArchangelController : Controller() {
     }
 
     fun store(xip: Package, includeFiles: Boolean, label: String) {
-        toast(label, "Uploading to Ethereum")
+        if (xip.pageCount == 1) {
+            storeSmall(xip, includeFiles, label)
+            return
+        }
 
-        val payload = xip.toJSON(includeFiles)
+        toast("Uploading", "Large SIP, so chunking ...")
+        storePage(xip, 1, includeFiles, label)
+    }
+
+    private fun storePage(xip: Package, page: Int, includeFiles: Boolean, label: String) {
+        if (page > xip.pageCount) {
+            toast(label, "All Package chunks written")
+            characteriseVideos(xip)
+            return
+        }
+
+        runAsync {
+            val payload = xip.toJSON(includeFiles, page)
+            val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
+            ethereum.store("${xip.key}/${page}:${xip.pageCount}", payload, creds)
+        }.success {
+            toast(label, "Chunk ${page} of ${xip.pageCount} written")
+            storePage(xip, page+1, includeFiles, label)
+        }.fail {
+            toast(label, "Could not write package: ${it.message}")
+        }
+    }
+
+    private fun storeSmall(xip: Package, includeFiles: Boolean, label: String) {
+        toast("Uploading", "Writing ${label} to Ethereum")
+
+        val payload = xip.toJSON(includeFiles, 1)
 
         runAsync {
             val creds = WalletUtils.loadCredentials(conf.password, conf.walletFile)
